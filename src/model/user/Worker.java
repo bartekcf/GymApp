@@ -13,8 +13,8 @@ public class Worker extends User implements Serializable {
     private double salary;
     private List<Activity> activities;  // lista zajęć, które pracownik prowadzi
 
-    public Worker(String firstName, String lastName, String login, String password, LocalDate birthDay, double salary) {
-        super(firstName, lastName, login, password, birthDay);
+    public Worker(String firstName, String lastName, String login, String password, LocalDate birthDay, double salary, String userRole) {
+        super(firstName, lastName, login, password, birthDay, userRole);
         this.id = nextId++;
         this.salary = salary;
         this.activities = new ArrayList<>();

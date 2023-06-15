@@ -1,16 +1,23 @@
 package model.components;
 
+import interfaces.UserFactoryInterface;
 import model.management.DataBase;
+import model.management.ManagementSystem;
+import model.user.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
 public class RegisterForm {
 
-    public RegisterForm() {
+    private ManagementSystem managementSystem;
+
+    public RegisterForm(ManagementSystem managementSystem) {
+        this.managementSystem = managementSystem;
         createAndShowGUI();
     }
 
@@ -47,6 +54,20 @@ public class RegisterForm {
         JLabel passwordLabel = new JLabel("Hasło:");
         JPasswordField passwordField = new JPasswordField(20);
 
+        JLabel roleLabel = new JLabel("Rola:");
+        String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANGER};
+        JComboBox roleComboBox = new JComboBox(roles);
+
+        JLabel salaryLabel = new JLabel("Pensja:");
+        JTextField salaryField = new JTextField(20);
+        JLabel managementStyleLabel = new JLabel("Styl zarządzania:");
+        JTextField managementStyleField = new JTextField(20);
+
+        salaryLabel.setVisible(false);
+        salaryField.setVisible(false);
+        managementStyleLabel.setVisible(false);
+        managementStyleField.setVisible(false);
+
         GridBagConstraints labelConstraints = new GridBagConstraints();
         labelConstraints.gridx = 0;
         labelConstraints.anchor = GridBagConstraints.EAST;
@@ -68,35 +89,100 @@ public class RegisterForm {
         formPanel.add(passwordLabel, labelConstraints);
         formPanel.add(passwordField, fieldConstraints);
 
-        // Utwórz przycisk "Zapisz" do zatwierdzania formularza
-        JButton saveButton = new JButton("Zapisz");
-        saveButton.setFont(new Font("Arial", Font.BOLD, 16));
-        saveButton.addActionListener(e -> {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(DataBase.LOGIN_DATA, true))) {
-                writer.write(loginField.getText() + "," + new String(passwordField.getPassword()) + ","
-                        + nameField.getText() + "," + surnameField.getText() + "," + dobField.getText());
-                writer.newLine();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+        formPanel.add(roleLabel, labelConstraints);
+        formPanel.add(roleComboBox, fieldConstraints);
+
+        formPanel.add(salaryLabel, labelConstraints);
+        formPanel.add(salaryField, fieldConstraints);
+        formPanel.add(managementStyleLabel, labelConstraints);
+        formPanel.add(managementStyleField, fieldConstraints);
+
+        // Dodaj przycisk "Zarejestruj się"
+        JButton submitButton = new JButton("Zarejestruj się");
+        GridBagConstraints buttonConstraints = new GridBagConstraints();
+        buttonConstraints.gridx = 1;
+        buttonConstraints.gridy = 10;
+        buttonConstraints.anchor = GridBagConstraints.WEST;
+        buttonConstraints.insets = new Insets(30, 0, 0, 10);
+
+        roleComboBox.addActionListener(e -> {
+            String selectedRole = (String)roleComboBox.getSelectedItem();
+
+            switch (Objects.requireNonNull(selectedRole)) {
+                case User.ROLE_WORKER -> {
+                    salaryLabel.setVisible(true);
+                    salaryField.setVisible(true);
+                    managementStyleLabel.setVisible(false);
+                    managementStyleField.setVisible(false);
+                }
+                case User.ROLE_MANGER -> {
+                    salaryLabel.setVisible(true);
+                    salaryField.setVisible(true);
+                    managementStyleLabel.setVisible(true);
+                    managementStyleField.setVisible(true);
+                }
+                default -> {
+                    salaryLabel.setVisible(false);
+                    salaryField.setVisible(false);
+                    managementStyleLabel.setVisible(false);
+                    managementStyleField.setVisible(false);
+                }
+            }
+
+            formPanel.revalidate();
+            formPanel.repaint();
+        });
+
+        submitButton.addActionListener(e -> {
+            try {
+                String name = nameField.getText();
+                String surname = surnameField.getText();
+                LocalDate dob = LocalDate.parse(dobField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String login = loginField.getText();
+                String password = new String(passwordField.getPassword());
+                String role = (String) roleComboBox.getSelectedItem();
+
+                UserFactoryInterface factory;
+                User newUser = null;
+
+                if (role.equalsIgnoreCase(User.ROLE_CLUB_MEMBER)) {
+                    factory = new ClubMemberFactory();
+                    newUser = factory.create(name, surname, login, password, dob);
+                } else if (role.equalsIgnoreCase(User.ROLE_WORKER)) {
+                    factory = new WorkerFactory();
+                    newUser = factory.create(name, surname, login, password, dob);
+                    if (newUser instanceof Worker) {
+                        ((Worker) newUser).setSalary(Double.parseDouble(salaryField.getText()));
+                    }
+                } else if (role.equalsIgnoreCase(User.ROLE_MANGER)) {
+                    factory = new ManagerFactory();
+                    newUser = factory.create(name, surname, login, password, dob);
+                    if (newUser instanceof Manager) {
+                        ((Manager) newUser).setSalary(Double.parseDouble(salaryField.getText()));
+                        ((Manager) newUser).setManagementStyle(managementStyleField.getText());
+                    }
+                }
+
+                if (newUser != null) {
+                    managementSystem.addUser(newUser);
+                    DataBase db = new DataBase(managementSystem);
+                    db.saveUser(newUser);  // save the user to the file using DataBase class
+                    JOptionPane.showMessageDialog(frame, "Rejestracja powiodła się!");
+                }
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(frame, "Nieprawidłowy format daty. Proszę użyć formatu: RRRR-MM-DD");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Nieprawidłowy format pensji. Proszę wprowadzić liczbę.");
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(frame, "Wprowadzono nieprawidłowe dane: " + ex.getMessage());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Wystąpił błąd podczas rejestracji: " + ex.getMessage());
             }
         });
 
-
-        GridBagConstraints buttonConstraints = new GridBagConstraints();
-        buttonConstraints.gridx = 0;
-        buttonConstraints.gridy = 6;
-        buttonConstraints.gridwidth = 2;
-        buttonConstraints.anchor = GridBagConstraints.CENTER;
-        buttonConstraints.insets = new Insets(30, 10, 10, 10);
-        formPanel.add(saveButton, buttonConstraints);
+        formPanel.add(submitButton, buttonConstraints);
 
         frame.add(formPanel);
-
-        // Ustawienie widoczności
         frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(RegisterForm::new);
     }
 }

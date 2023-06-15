@@ -4,6 +4,7 @@ import model.gym.Activity;
 import model.gym.GymRoom;
 import model.user.ClubMember;
 import model.user.Manager;
+import model.user.User;
 import model.user.Worker;
 
 import java.util.ArrayList;
@@ -42,5 +43,15 @@ public class ManagementSystem {
 
     public void addGymRoom(GymRoom gymRoom) {
         this.gymRooms.add(gymRoom);
+    }
+
+    public void addUser(User user) {
+        if (user instanceof ClubMember) {
+            addClubMember((ClubMember) user);
+        } else if (user instanceof Worker) {
+            addWorker((Worker) user);
+        } else if (user instanceof Manager) {
+            addManager((Manager) user);
+        }
     }
 }

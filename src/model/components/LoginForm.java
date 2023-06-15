@@ -1,13 +1,23 @@
 package model.components;
 
+import model.management.DataBase;
+import model.management.ManagementSystem;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class LoginForm {
 
-    public LoginForm() {
-        createAndShowGUI();
-    }
+    private DataBase db;
+    private JFrame frame;
+    private ManagementSystem managementSystem;
+
+        public LoginForm(DataBase db, JFrame frame,ManagementSystem managementSystem) {
+            this.db = db;
+            this.frame = frame;
+            this.managementSystem = managementSystem;
+            createAndShowGUI();
+        }
 
     private void createAndShowGUI() {
         // Utwórz ramkę dla nowego okna
@@ -54,6 +64,35 @@ public class LoginForm {
         // Utwórz przycisk "Zapisz" do zatwierdzania formularza
         JButton saveButton = new JButton("Zaloguj");
         saveButton.setFont(new Font("Arial", Font.BOLD, 16));
+        saveButton.addActionListener(e -> {
+            String username = loginField.getText();
+            String password = new String(passwordField.getPassword());
+            boolean loginSuccessful = db.loadLoginData(username, password);
+            if (loginSuccessful) {
+                frame.dispose();  // zamknij bieżące okno
+                EventQueue.invokeLater(() -> {
+                    frame.dispose();
+                    if(loguje sie ClubMember){
+                    MainPanel mainPanel = new MainPanel(db,managementSystem);
+                    mainPanel.createAndShowGUI();}
+
+                    if(loguje sie pracownik){
+                        MainPanelWorker = new MainPanelWorker()
+                                // reeszta
+                    }
+
+                    if(loguje sie manager){
+                        MainPanelManager= new MainPanelManager()
+                        // reeszta
+                    }
+
+                });
+            } else {
+                // Można wyświetlić komunikat o błędzie logowania
+                JOptionPane.showMessageDialog(frame, "Niepoprawne dane logowania!", "Błąd", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         GridBagConstraints buttonConstraints = new GridBagConstraints();
         buttonConstraints.gridx = 0;
         buttonConstraints.gridy = 6;
@@ -67,8 +106,7 @@ public class LoginForm {
         // Ustawienie widoczności
         frame.setVisible(true);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(RegisterForm::new);
-    }
 }
+
+
+

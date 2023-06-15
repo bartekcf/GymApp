@@ -9,8 +9,8 @@ public class Manager extends User  implements Serializable {
     private double salary;
     private String managementStyle;
 
-    public Manager(String firstName, String lastName, String login, String password, LocalDate birthDay, double salary, String managementStyle) {
-        super(firstName, lastName, login, password, birthDay);
+    public Manager(String firstName, String lastName, String login, String password, LocalDate birthDay, double salary, String managementStyle, String userRole) {
+        super(firstName, lastName, login, password, birthDay, userRole);
         this.id = nextId++;
         this.salary = salary;
         this.managementStyle = managementStyle;

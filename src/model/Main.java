@@ -7,21 +7,21 @@ import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
 import model.user.ClubMember;
 import model.user.Manager;
+import model.user.User;
 import model.user.Worker;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
 
-        ClubMember mirek = new ClubMember("Mirek", "Kowalczuk", "Miras" , "Haslo123", LocalDate.of(2002, 8, 17));
-        Manager mirekmen = new Manager("Mirek", "Kowalczuk", "Miras" , "Haslo123", LocalDate.of(2002, 8, 17), 2000,"Energiczny");
-        Worker mirekprac = new Worker("Mirek", "Kowalczuk", "Miras" , "Haslo123", LocalDate.of(2002, 8, 17), 100);
-        ClubMember marek = new ClubMember("Marek", "Kowalczuk", "Mira11s" , "Ha2slo123", LocalDate.of(2002, 8, 17));
-        Manager marekmen = new Manager("Marek", "Kowalczuk", "Mira11s" , "Ha2slo123", LocalDate.of(2002, 8, 17), 500, "Agresywny");
-        Worker marekprac = new Worker("Marek", "Kowalczuk", "Mira11s" , "Ha2slo123", LocalDate.of(2002, 8, 17), 100);
+        ClubMember mirek = new ClubMember("Mirek", "Kowalczuk", "Miras", "Haslo123", LocalDate.of(2002, 8, 17), User.ROLE_WORKER);
+        Manager mirekmen = new Manager("Mirek", "Kowalczuk", "Miras", "Haslo123", LocalDate.of(2002, 8, 17), 2000, "Energiczny", User.ROLE_WORKER);
+        Worker mirekprac = new Worker("Mirek", "Kowalczuk", "Miras", "Haslo123", LocalDate.of(2002, 8, 17), 100, User.ROLE_WORKER);
+        ClubMember marek = new ClubMember("Marek", "Kowalczuk", "Mira11s", "Ha2slo123", LocalDate.of(2002, 8, 17), User.ROLE_WORKER);
+        Manager marekmen = new Manager("Marek", "Kowalczuk", "Mira11s", "Ha2slo123", LocalDate.of(2002, 8, 17), 500, "Agresywny", User.ROLE_WORKER);
+        Worker marekprac = new Worker("Marek", "Kowalczuk", "Mira11s", "Ha2slo123", LocalDate.of(2002, 8, 17), 100, User.ROLE_WORKER);
 
 //        System.out.println(mirek.getId());
 //        System.out.println(marek.getId());
@@ -36,7 +36,7 @@ public class Main {
 
         System.out.println(marekmen.getManagementStyle());
 
-        Activity aktywnosc1 = new Activity("Jogging", LocalDate.of(2023,6,12).atStartOfDay(), LocalDate.of(2023,6,12).atStartOfDay(),marekprac);
+        Activity aktywnosc1 = new Activity("Jogging", LocalDate.of(2023, 6, 12).atStartOfDay(), LocalDate.of(2023, 6, 12).atStartOfDay(), marekprac);
 
         aktywnosc1.addToActivity(mirek);
         aktywnosc1.addToActivity(marek);
@@ -48,12 +48,12 @@ public class Main {
 
         aktywnosc1.removeFromActivity(marek);
 
-        System.out.println(aktywnosc1.getMembers());-
+        System.out.println(aktywnosc1.getMembers());
 
         GymRoom pokoj222 = new GymRoom("Jogging Room", 222);
 
         pokoj222.addActivity(aktywnosc1);
-        System.out.println(pokoj222.getName() + " " +  pokoj222.getRoomNumber());
+        System.out.println(pokoj222.getName() + " " + pokoj222.getRoomNumber());
 
         System.out.println(pokoj222.getActivities());
 
@@ -73,8 +73,7 @@ public class Main {
         System.out.println("Gym Rooms: " + database.getGymRooms());
 
 
-
-        // Utwórz interfejs użytkownika
-        javax.swing.SwingUtilities.invokeLater(() -> new GraphicalUserInterface(managementSystem));
+        GraphicalUserInterface GUI = new GraphicalUserInterface(managementSystem);
+        GUI.createAndShowGUI();
     }
 }

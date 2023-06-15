@@ -5,6 +5,7 @@ import model.gym.Activity;
 import model.gym.GymRoom;
 import model.user.ClubMember;
 import model.user.Manager;
+import model.user.User;
 import model.user.Worker;
 
 import java.awt.*;
@@ -21,7 +22,7 @@ public class DataBase implements Serializable {
     public static final String GYM_ROOMS_FILE = MAIN_FOLDER + "gym_rooms.txt";
     public static final String LOGIN_DATA = MAIN_FOLDER + "login_data.txt";
 
-
+    public boolean isLoggedIn = false;
     private ManagementSystem managementSystem;
     private List<ClubMember> clubMembers;
     private List<Worker> workers;
@@ -108,7 +109,6 @@ public class DataBase implements Serializable {
         loadManagers();
         loadActivities();
         loadGymRooms();
-//        loadLoginData();
         loadAllData();
     }
 
@@ -148,7 +148,7 @@ public class DataBase implements Serializable {
         }
     }
 
-    public void loadLoginData(String username, String password) {
+    public boolean loadLoginData(String username, String password) {
         List<String[]> loginDataList = new ArrayList<>(); // Lista przechowująca dane logowania
 
         try (BufferedReader reader = new BufferedReader(new FileReader(LOGIN_DATA))) {
@@ -164,18 +164,15 @@ public class DataBase implements Serializable {
         // Sprawdź, czy wprowadzone dane zgadzają się z danymi logowania
         for (String[] loginData : loginDataList) {
             if (loginData[0].equals(username) && loginData[1].equals(password)) {
-                // Jeśli dane logowania są poprawne, przenieś się do nowego okna
-                EventQueue.invokeLater(() -> {
-                    MainPanel mainPanel = new MainPanel(managementSystem);
-                    mainPanel.createAndShowGUI();
-                });
-                return; // Zakończ funkcję po przeniesieniu do nowego okna
+                return true; // Zwraca true, jeśli dane logowania są poprawne
             }
         }
 
         // Jeśli dane logowania są niepoprawne, wyświetl komunikat lub wykonaj inne działania
         System.out.println("Niepoprawne dane logowania!");
+        return false; // Zwraca false, jeśli dane logowania są niepoprawne
     }
+
 
 
     public void loadAllData() {
@@ -191,7 +188,30 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
 
-        // Tutaj możesz wykorzystać listę allDataList do dalszej obróbki wszystkich danych
+    }
+
+    public void saveUser(User user) {
+        if (user instanceof ClubMember) {
+            saveClubMember((ClubMember) user);
+        } else if (user instanceof Worker) {
+            saveWorker((Worker) user);
+        } else if (user instanceof Manager) {
+            saveManager((Manager) user);
+        }
+
+        saveData();
+    }
+
+    private void saveClubMember(ClubMember clubMember) {
+        clubMembers.add(clubMember);
+    }
+
+    private void saveWorker(Worker worker) {
+        workers.add(worker);
+    }
+
+    private void saveManager(Manager manager) {
+        managers.add(manager);
     }
 
 }

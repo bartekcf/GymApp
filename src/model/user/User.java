@@ -10,12 +10,19 @@ public abstract class User implements Serializable {
     private String password;
     private LocalDate birthDay;
 
-    public User(String firstName, String lastName, String login, String password, LocalDate birthDay) {
+    private String userRole;
+
+    public static final String ROLE_CLUB_MEMBER  = "ClubMember";
+    public static final String ROLE_WORKER  = "Worker";
+    public static final String ROLE_MANGER  = "Manager";
+
+    public User(String firstName, String lastName, String login, String password, LocalDate birthDay, String userRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.password = password;
         this.birthDay = birthDay;
+        this.userRole = userRole;
     }
 
 //    public User(){}

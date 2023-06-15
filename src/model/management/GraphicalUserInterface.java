@@ -12,13 +12,15 @@ public class GraphicalUserInterface {
     public static final int FRAME_HEIGHT = 600;
     private final String MAIN_IMG = "src/files/images/gym_background.jpg";
     private ManagementSystem managementSystem;
+    private RegisterForm registerForm;
+    private LoginForm loginForm;
     private JFrame frame;
     private JButton loginButton;
     private JButton registerButton;
 
     public GraphicalUserInterface(ManagementSystem managementSystem) {
         this.managementSystem = managementSystem;
-        createAndShowGUI();
+//        createAndShowGUI();
     }
 
     public void createAndShowGUI() {
@@ -36,17 +38,21 @@ public class GraphicalUserInterface {
         // Zwiększenie rozmiaru przycisku
         loginButton = new JButton("Zaloguj się");
         loginButton.setPreferredSize(new Dimension(200, 40));
-//        loginButton.setBackground(Color.cyan);
         registerButton = new JButton("Zarejestruj się");
         registerButton.setPreferredSize(new Dimension(200, 40));
 
         registerButton.addActionListener(e -> {
-            new RegisterForm();
+            if (registerForm == null) {
+                registerForm = new RegisterForm(managementSystem);
+            }
             frame.dispose();
         });
 
         loginButton.addActionListener(e -> {
-            new LoginForm();
+            if (loginForm == null) {
+                DataBase db = new DataBase(managementSystem);
+                loginForm = new LoginForm(db, frame, managementSystem);
+            }
             frame.dispose();
         });
 
@@ -55,4 +61,5 @@ public class GraphicalUserInterface {
 
         frame.setVisible(true);
     }
+
 }
