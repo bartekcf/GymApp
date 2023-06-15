@@ -1,7 +1,12 @@
-package model.components;
-
+import model.components.MainPanel;
+import model.components.MainPanelManager;
+import model.components.MainPanelWorker;
 import model.management.DataBase;
 import model.management.ManagementSystem;
+import model.user.ClubMember;
+import model.user.Manager;
+import model.user.User;
+import model.user.Worker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +17,16 @@ public class LoginForm {
     private JFrame frame;
     private ManagementSystem managementSystem;
 
-        public LoginForm(DataBase db, JFrame frame,ManagementSystem managementSystem) {
-            this.db = db;
-            this.frame = frame;
-            this.managementSystem = managementSystem;
-            createAndShowGUI();
-        }
+    public LoginForm(DataBase db, JFrame frame, ManagementSystem managementSystem) {
+        this.db = db;
+        this.frame = frame;
+        this.managementSystem = managementSystem;
+        createAndShowGUI();
+    }
+
+    public JFrame getFrame() {
+        return frame;
+    }
 
     private void createAndShowGUI() {
         // Utwórz ramkę dla nowego okna
@@ -61,34 +70,49 @@ public class LoginForm {
         formPanel.add(passwordLabel, labelConstraints);
         formPanel.add(passwordField, fieldConstraints);
 
-        // Utwórz przycisk "Zapisz" do zatwierdzania formularza
+        String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANAGER};
+        JComboBox<String> roleComboBox = new JComboBox<>(roles);
+
+        GridBagConstraints roleConstraints = new GridBagConstraints();
+        roleConstraints.gridx = 0;
+        roleConstraints.gridy = 1;
+        roleConstraints.anchor = GridBagConstraints.EAST;
+        roleConstraints.insets = new Insets(10, 10, 10, 30);
+        formPanel.add(new JLabel("Rola:"), roleConstraints);
+
+        GridBagConstraints roleFieldConstraints = new GridBagConstraints();
+        roleFieldConstraints.gridx = 1;
+        roleFieldConstraints.gridy = 1;
+        roleFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+        roleFieldConstraints.insets = new Insets(10, 0, 10, 10);
+        formPanel.add(roleComboBox, roleFieldConstraints);
+
+        // Utwórz przycisk "Zaloguj" do zatwierdzania formularza
         JButton saveButton = new JButton("Zaloguj");
         saveButton.setFont(new Font("Arial", Font.BOLD, 16));
         saveButton.addActionListener(e -> {
-            String username = loginField.getText();
+            String login = loginField.getText();
             String password = new String(passwordField.getPassword());
-            boolean loginSuccessful = db.loadLoginData(username, password);
-            if (loginSuccessful) {
-                frame.dispose();  // zamknij bieżące okno
+            String selectedRole = (String) roleComboBox.getSelectedItem();
+
+            User user = db.loadLoginData(login, password, selectedRole);
+            if (user != null) {
+                frame.dispose(); // Zamknięcie bieżącego okna
+
                 EventQueue.invokeLater(() -> {
                     frame.dispose();
-                    if(loguje sie ClubMember){
-                    MainPanel mainPanel = new MainPanel(db,managementSystem);
-                    mainPanel.createAndShowGUI();}
-
-                    if(loguje sie pracownik){
-                        MainPanelWorker = new MainPanelWorker()
-                                // reeszta
-                    }
-
-                    if(loguje sie manager){
-                        MainPanelManager= new MainPanelManager()
-                        // reeszta
-                    }
-
+                    if (user instanceof ClubMember) {
+                        MainPanel mainPanel = new MainPanel(db, user);
+                        mainPanel.createAndShowGUI();}
+//                    } else if (user instanceof Worker) {
+//                        MainPanelWorker mainPanelWorker = new MainPanelWorker(db, managementSystem);
+//                        mainPanelWorker.createAndShowGUI();
+//                    } else if (user instanceof Manager) {
+//                        MainPanelManager mainPanelManager = new MainPanelManager(db, managementSystem);
+//                        mainPanelManager.createAndShowGUI();
+//                    }
                 });
             } else {
-                // Można wyświetlić komunikat o błędzie logowania
                 JOptionPane.showMessageDialog(frame, "Niepoprawne dane logowania!", "Błąd", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -107,6 +131,3 @@ public class LoginForm {
         frame.setVisible(true);
     }
 }
-
-
-

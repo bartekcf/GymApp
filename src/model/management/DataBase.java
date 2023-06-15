@@ -1,6 +1,8 @@
 package model.management;
 
 import model.components.MainPanel;
+import model.components.MainPanelManager;
+import model.components.MainPanelWorker;
 import model.gym.Activity;
 import model.gym.GymRoom;
 import model.user.ClubMember;
@@ -8,6 +10,7 @@ import model.user.Manager;
 import model.user.User;
 import model.user.Worker;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -22,7 +25,6 @@ public class DataBase implements Serializable {
     public static final String GYM_ROOMS_FILE = MAIN_FOLDER + "gym_rooms.txt";
     public static final String LOGIN_DATA = MAIN_FOLDER + "login_data.txt";
 
-    public boolean isLoggedIn = false;
     private ManagementSystem managementSystem;
     private List<ClubMember> clubMembers;
     private List<Worker> workers;
@@ -37,6 +39,33 @@ public class DataBase implements Serializable {
         this.managers = new ArrayList<>();
         this.activities = new ArrayList<>();
         this.gymRooms = new ArrayList<>();
+    }
+
+    public ClubMember findClubMember(String username) {
+        for (ClubMember clubMember : clubMembers) {
+            if (clubMember.getClubMemberLogin().equals(username)) {
+                return clubMember;
+            }
+        }
+        return null;
+    }
+
+    public Worker findWorker(String username) {
+        for (Worker worker : workers) {
+            if (worker.getWorkerLogin().equals(username)) {
+                return worker;
+            }
+        }
+        return null;
+    }
+
+    public Manager findManager(String username) {
+        for (Manager manager : managers) {
+            if (manager.getManagerLogin().equals(username)) {
+                return manager;
+            }
+        }
+        return null;
     }
 
     public List<ClubMember> getClubMembers() {
@@ -74,6 +103,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void saveWorkers() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(WORKERS_FILE))) {
             out.writeObject(workers);
@@ -81,6 +111,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void saveManagers() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(MANAGERS_FILE))) {
             out.writeObject(managers);
@@ -88,6 +119,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void saveActivities() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(ACTIVITIES_FILE))) {
             out.writeObject(activities);
@@ -95,6 +127,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void saveGymRooms() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(GYM_ROOMS_FILE))) {
             out.writeObject(gymRooms);
@@ -119,6 +152,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void loadWorkers() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(WORKERS_FILE))) {
             workers = (List<Worker>) in.readObject();
@@ -126,6 +160,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void loadManagers() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(MANAGERS_FILE))) {
             managers = (List<Manager>) in.readObject();
@@ -133,6 +168,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void loadActivities() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(ACTIVITIES_FILE))) {
             activities = (List<Activity>) in.readObject();
@@ -140,6 +176,7 @@ public class DataBase implements Serializable {
             e.printStackTrace();
         }
     }
+
     private void loadGymRooms() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(GYM_ROOMS_FILE))) {
             gymRooms = (List<GymRoom>) in.readObject();
@@ -148,32 +185,29 @@ public class DataBase implements Serializable {
         }
     }
 
-    public boolean loadLoginData(String username, String password) {
-        List<String[]> loginDataList = new ArrayList<>(); // Lista przechowująca dane logowania
+    //jebac to gowno @todo zrobic gownob
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(LOGIN_DATA))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] loginData = line.split(",");
-                loginDataList.add(loginData); // Dodawanie danych logowania do listy loginDataList
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public User loadLoginData(String username, String password, String selectedRole) {
+        User user = null;
+
+        if (username.isEmpty() || password.isEmpty()) {
+            System.out.println("Niepoprawne dane logowania!");
+            return null;
         }
 
-        // Sprawdź, czy wprowadzone dane zgadzają się z danymi logowania
-        for (String[] loginData : loginDataList) {
-            if (loginData[0].equals(username) && loginData[1].equals(password)) {
-                return true; // Zwraca true, jeśli dane logowania są poprawne
+        switch (selectedRole) {
+            case User.ROLE_CLUB_MEMBER -> {
+                return findClubMember(username);
+            }
+            case User.ROLE_WORKER -> {
+                return findWorker(username);
+            }
+            case User.ROLE_MANAGER -> {
+                return findManager(username);
             }
         }
-
-        // Jeśli dane logowania są niepoprawne, wyświetl komunikat lub wykonaj inne działania
-        System.out.println("Niepoprawne dane logowania!");
-        return false; // Zwraca false, jeśli dane logowania są niepoprawne
+        return null;
     }
-
-
 
     public void loadAllData() {
         List<String[]> allDataList = new ArrayList<>(); // Lista przechowująca wszystkie dane
@@ -187,7 +221,6 @@ public class DataBase implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void saveUser(User user) {
@@ -213,5 +246,4 @@ public class DataBase implements Serializable {
     private void saveManager(Manager manager) {
         managers.add(manager);
     }
-
 }

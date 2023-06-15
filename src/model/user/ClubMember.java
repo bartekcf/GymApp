@@ -55,4 +55,8 @@ public class ClubMember extends User implements Serializable {
         this.activities.remove(activity);
     }
 
+    public String getClubMemberLogin()
+    {
+        return this.getLogin();
+    }
 }

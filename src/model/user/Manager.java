@@ -35,6 +35,11 @@ public class Manager extends User  implements Serializable {
     public void setManagementStyle(String managementStyle) {
         this.managementStyle = managementStyle;
     }
+    public String getManagerLogin()
+    {
+        return this.getLogin();
+    }
+
 
     // inne metody...
 }

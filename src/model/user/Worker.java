@@ -44,4 +44,9 @@ public class Worker extends User implements Serializable {
         this.activities.remove(activity);
     }
 
+    public String getWorkerLogin()
+    {
+        return this.getLogin();
+    }
+
 }

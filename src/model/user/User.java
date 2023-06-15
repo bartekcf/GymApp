@@ -14,7 +14,7 @@ public abstract class User implements Serializable {
 
     public static final String ROLE_CLUB_MEMBER  = "ClubMember";
     public static final String ROLE_WORKER  = "Worker";
-    public static final String ROLE_MANGER  = "Manager";
+    public static final String ROLE_MANAGER  = "Manager";
 
     public User(String firstName, String lastName, String login, String password, LocalDate birthDay, String userRole) {
         this.firstName = firstName;
