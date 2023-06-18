@@ -16,28 +16,44 @@ public class MainPanel {
     private JFrame frame;
     private ManagementSystem managementSystem;
     private DataBase db;
-    private ClubMember clubMember;  // Dodane
+    private ClubMember clubMember;
 
-    // Dodajemy do konstruktora ClubMember
     public MainPanel(DataBase db, ClubMember clubMember) {
         this.db = db;
-        this.clubMember = clubMember;  // Dodane
+        this.clubMember = clubMember;
     }
 
     public void createAndShowGUI() {
-        // Utwórz ramkę
         frame = new JFrame("Panel Główny");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(GraphicalUserInterface.FRAME_WIDTH, GraphicalUserInterface.FRAME_HEIGHT);
         frame.setLayout(new GridBagLayout());
 
-        // Utwórz elementy interfejsu użytkownika dla widoku klubowicza
+        // Dodanie napisu "Typ konta: członek siłowni" w prawym górnym rogu
+        JLabel accountTypeLabel = new JLabel("Typ konta: członek siłowni");
+        accountTypeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        GridBagConstraints gbcAccountTypeLabel = new GridBagConstraints();
+        gbcAccountTypeLabel.anchor = GridBagConstraints.NORTHEAST;
+        gbcAccountTypeLabel.insets = new Insets(10, 10, 0, 10);
+        gbcAccountTypeLabel.gridx = 1;
+        gbcAccountTypeLabel.gridy = 0;
+        gbcAccountTypeLabel.weightx = 1.0;
+        gbcAccountTypeLabel.weighty = 0.0;
+        gbcAccountTypeLabel.gridwidth = GridBagConstraints.REMAINDER;
+        frame.getContentPane().add(accountTypeLabel, gbcAccountTypeLabel);
+
         JLabel welcomeLabel = new JLabel("Witaj, " + clubMember.getFirstName() + " " + clubMember.getLastName() + "!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
+        JButton showCurrentActivitiesButton = new JButton("Pokaż dostępne zajęcia");
+        showCurrentActivitiesButton.addActionListener(e -> {
+            List<Activity> activities = clubMember.getActivities();
+            // Implementuj logikę wyświetlania listy zajęć
+        });
+
         JButton showActivitiesButton = new JButton("Pokaż moje zajęcia");
         showActivitiesButton.addActionListener(e -> {
-            List<Activity> activities = clubMember.getActivities();  // Zakładam, że ta metoda istnieje
+            List<Activity> activities = clubMember.getActivities();
             // Implementuj logikę wyświetlania listy zajęć
         });
 
@@ -46,23 +62,19 @@ public class MainPanel {
             // Implementuj logikę aktualizacji profilu
         });
 
-        // itd.
-
         // Dodaj elementy do panelu
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.insets = new Insets(10, 10, 10, 10);
         frame.getContentPane().add(welcomeLabel, gbc);
 
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         frame.getContentPane().add(showActivitiesButton, gbc);
 
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         frame.getContentPane().add(updateProfileButton, gbc);
-
-        // itd.
 
         // Wyświetl ramkę
         frame.setVisible(true);

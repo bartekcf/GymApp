@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ManagementSystem {
+
+    private DataBase db;
     private List<ClubMember> clubMembers;
     private List<Worker> workers;
     private List<Manager> managers;
@@ -26,15 +28,21 @@ public class ManagementSystem {
     }
 
     public void addClubMember(ClubMember clubMember) {
-        this.clubMembers.add(clubMember);
+        DataBase db = new DataBase(this);
+        db.getClubMembers().add(clubMember);
+        db.saveData();
     }
 
     public void addWorker(Worker worker) {
-        this.workers.add(worker);
+        DataBase db = new DataBase(this);
+        db.getWorkers().add(worker);
+        db.saveData();
     }
 
     public void addManager(Manager manager) {
-        this.managers.add(manager);
+        DataBase db = new DataBase(this);
+        db.getManagers().add(manager);
+        db.saveData();
     }
 
     public void addActivity(Activity activity) {

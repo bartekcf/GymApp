@@ -23,6 +23,7 @@ public class Main {
         Manager marekmen = new Manager("Marek", "Kowalczuk", "Mira11s", "Ha2slo123", LocalDate.of(2002, 8, 17), 500, "Agresywny", User.ROLE_WORKER);
         Worker marekprac = new Worker("Marek", "Kowalczuk", "Mira11s", "Ha2slo123", LocalDate.of(2002, 8, 17), 100, User.ROLE_WORKER);
 
+
 //        System.out.println(mirek.getId());
 //        System.out.println(marek.getId());
 //        System.out.println(mirekmen.getId());
@@ -61,10 +62,10 @@ public class Main {
 
         DataBase database = new DataBase(managementSystem);
 
-        database.getClubMembers().add(marek);
-        database.saveData();
+//        database.getClubMembers().add(marek);
+//        database.saveData();
 
-        database.loadData();
+//        database.loadData();
 
         System.out.println("Club Members: " + database.getClubMembers());
         System.out.println("Workers: " + database.getWorkers());

@@ -1,8 +1,5 @@
 package model.management;
 
-import model.components.MainPanel;
-import model.components.MainPanelManager;
-import model.components.MainPanelWorker;
 import model.gym.Activity;
 import model.gym.GymRoom;
 import model.user.ClubMember;
@@ -10,19 +7,19 @@ import model.user.Manager;
 import model.user.User;
 import model.user.Worker;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataBase implements Serializable {
     public static final String MAIN_FOLDER = "src/files/";
-    public static final String CLUB_MEMBERS_FILE = MAIN_FOLDER + "club_members.txt";
-    public static final String WORKERS_FILE = MAIN_FOLDER + "workers.txt";
-    public static final String MANAGERS_FILE = MAIN_FOLDER + "managers.txt";
-    public static final String ACTIVITIES_FILE = MAIN_FOLDER + "activities.txt";
-    public static final String GYM_ROOMS_FILE = MAIN_FOLDER + "gym_rooms.txt";
+    public static final String CLUB_MEMBERS_FILE = MAIN_FOLDER + "club_members.ser";
+    public static final String WORKERS_FILE = MAIN_FOLDER + "workers.ser";
+    public static final String MANAGERS_FILE = MAIN_FOLDER + "managers.ser";
+    public static final String ACTIVITIES_FILE = MAIN_FOLDER + "activities.ser";
+    public static final String GYM_ROOMS_FILE = MAIN_FOLDER + "gym_rooms.ser";
     public static final String LOGIN_DATA = MAIN_FOLDER + "login_data.txt";
 
     private ManagementSystem managementSystem;
@@ -185,7 +182,6 @@ public class DataBase implements Serializable {
         }
     }
 
-    //jebac to gowno @todo zrobic gownob
 
     public User loadLoginData(String username, String password, String selectedRole) {
         User user = null;
@@ -233,6 +229,18 @@ public class DataBase implements Serializable {
         }
 
         saveData();
+    }
+
+    public Map<String, ObjectInputStream> loadSerializedFiles() {
+        Map<String, ObjectInputStream> fileStreams = new HashMap<>();
+        try {
+            fileStreams.put(CLUB_MEMBERS_FILE, new ObjectInputStream(new FileInputStream(CLUB_MEMBERS_FILE)));
+            fileStreams.put(WORKERS_FILE, new ObjectInputStream(new FileInputStream(WORKERS_FILE)));
+            fileStreams.put(MANAGERS_FILE, new ObjectInputStream(new FileInputStream(MANAGERS_FILE)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileStreams;
     }
 
     private void saveClubMember(ClubMember clubMember) {

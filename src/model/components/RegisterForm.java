@@ -55,7 +55,7 @@ public class RegisterForm {
         JPasswordField passwordField = new JPasswordField(20);
 
         JLabel roleLabel = new JLabel("Rola:");
-        String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANGER};
+        String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANAGER};
         JComboBox roleComboBox = new JComboBox(roles);
 
         JLabel salaryLabel = new JLabel("Pensja:");
@@ -115,7 +115,7 @@ public class RegisterForm {
                     managementStyleLabel.setVisible(false);
                     managementStyleField.setVisible(false);
                 }
-                case User.ROLE_MANGER -> {
+                case User.ROLE_MANAGER -> {
                     salaryLabel.setVisible(true);
                     salaryField.setVisible(true);
                     managementStyleLabel.setVisible(true);
@@ -154,7 +154,7 @@ public class RegisterForm {
                     if (newUser instanceof Worker) {
                         ((Worker) newUser).setSalary(Double.parseDouble(salaryField.getText()));
                     }
-                } else if (role.equalsIgnoreCase(User.ROLE_MANGER)) {
+                } else if (role.equalsIgnoreCase(User.ROLE_MANAGER)) {
                     factory = new ManagerFactory();
                     newUser = factory.create(name, surname, login, password, dob);
                     if (newUser instanceof Manager) {
@@ -166,7 +166,7 @@ public class RegisterForm {
                 if (newUser != null) {
                     managementSystem.addUser(newUser);
                     DataBase db = new DataBase(managementSystem);
-                    db.saveUser(newUser);  // save the user to the file using DataBase class
+                    db.saveUser(newUser);
                     JOptionPane.showMessageDialog(frame, "Rejestracja powiodła się!");
                 }
             } catch (DateTimeParseException ex) {
