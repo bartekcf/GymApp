@@ -165,8 +165,8 @@ public class RegisterForm {
 
                 if (newUser != null) {
                     managementSystem.addUser(newUser);
-                    DataBase db = new DataBase(managementSystem);
-                    db.saveUser(newUser);
+//                    DataBase db = new DataBase(managementSystem);
+//                    db.saveUser(newUser);
                     JOptionPane.showMessageDialog(frame, "Rejestracja powiodła się!");
                 }
             } catch (DateTimeParseException ex) {

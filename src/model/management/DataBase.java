@@ -142,17 +142,34 @@ public class DataBase implements Serializable {
         loadAllData();
     }
 
+//    private void loadClubMembers() {
+//        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(CLUB_MEMBERS_FILE))) {
+//            clubMembers = (List<ClubMember>) in.readObject();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     private void loadClubMembers() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(CLUB_MEMBERS_FILE))) {
-            clubMembers = (List<ClubMember>) in.readObject();
+            ClubMember clubMember;
+            while ((clubMember = (ClubMember) in.readObject()) != null) {
+                clubMembers.add(clubMember);
+            }
+        } catch (EOFException e) {
+            // Zgłaszany, gdy odczyt pliku jest zakończony
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
-
     private void loadWorkers() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(WORKERS_FILE))) {
-            workers = (List<Worker>) in.readObject();
+            Worker worker;
+            while ((worker = (Worker) in.readObject()) != null) {
+                workers.add(worker);
+            }
+        } catch (EOFException e) {
+            // Zgłaszany, gdy odczyt pliku jest zakończony
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -160,7 +177,12 @@ public class DataBase implements Serializable {
 
     private void loadManagers() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(MANAGERS_FILE))) {
-            managers = (List<Manager>) in.readObject();
+            Manager manager;
+            while ((manager = (Manager) in.readObject()) != null) {
+                managers.add(manager);
+            }
+        } catch (EOFException e) {
+            // Zgłaszany, gdy odczyt pliku jest zakończony
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

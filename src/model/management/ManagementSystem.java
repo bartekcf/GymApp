@@ -20,6 +20,7 @@ public class ManagementSystem {
     private List<GymRoom> gymRooms;
 
     public ManagementSystem() {
+        this.db = new DataBase(this);
         this.clubMembers = new ArrayList<>();
         this.workers = new ArrayList<>();
         this.managers = new ArrayList<>();
@@ -27,22 +28,20 @@ public class ManagementSystem {
         this.gymRooms = new ArrayList<>();
     }
 
+
     public void addClubMember(ClubMember clubMember) {
-        DataBase db = new DataBase(this);
-        db.getClubMembers().add(clubMember);
-        db.saveData();
+        this.db.getClubMembers().add(clubMember);
+        this.db.saveData();
     }
 
     public void addWorker(Worker worker) {
-        DataBase db = new DataBase(this);
-        db.getWorkers().add(worker);
-        db.saveData();
+        this.db.getWorkers().add(worker);
+        this.db.saveData();
     }
 
     public void addManager(Manager manager) {
-        DataBase db = new DataBase(this);
-        db.getManagers().add(manager);
-        db.saveData();
+        this.db.getManagers().add(manager);
+        this.db.saveData();
     }
 
     public void addActivity(Activity activity) {

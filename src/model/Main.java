@@ -60,18 +60,18 @@ public class Main {
 
         ManagementSystem managementSystem = new ManagementSystem();
 
-        DataBase database = new DataBase(managementSystem);
+//        DataBase database = new DataBase(managementSystem);
 
 //        database.getClubMembers().add(marek);
 //        database.saveData();
 
 //        database.loadData();
 
-        System.out.println("Club Members: " + database.getClubMembers());
-        System.out.println("Workers: " + database.getWorkers());
-        System.out.println("Managers: " + database.getManagers());
-        System.out.println("Activities: " + database.getActivities());
-        System.out.println("Gym Rooms: " + database.getGymRooms());
+//        System.out.println("Club Members: " + database.getClubMembers());
+//        System.out.println("Workers: " + database.getWorkers());
+//        System.out.println("Managers: " + database.getManagers());
+//        System.out.println("Activities: " + database.getActivities());
+//        System.out.println("Gym Rooms: " + database.getGymRooms());
 
 
         GraphicalUserInterface GUI = new GraphicalUserInterface(managementSystem);

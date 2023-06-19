@@ -112,9 +112,9 @@ public class LoginForm {
                 switch (Objects.requireNonNull(selectedRole)) {
                     case User.ROLE_CLUB_MEMBER -> {
                         List<ClubMember> clubMembers = (List<ClubMember>) fileStreams.get(DataBase.CLUB_MEMBERS_FILE).readObject();
-                        for(ClubMember clubMember : clubMembers){
-                            System.out.println(clubMember);
-                        }
+//                        for(ClubMember clubMember : clubMembers){
+//                            System.out.println(clubMember);
+//                        }
                         user = clubMembers.stream()
                                 .filter(cm -> cm.getClubMemberLogin().equals(login) && cm.getPassword().equals(password))
                                 .findFirst()
@@ -148,7 +148,11 @@ public class LoginForm {
                     if (finalUser instanceof ClubMember) {
                         MainPanel mainPanel = new MainPanel(db, (ClubMember) finalUser);
                         mainPanel.createAndShowGUI();
-                    } // Kod dla innych ról zostanie dodany tutaj.
+                    }
+                    else if (finalUser instanceof Worker) {
+                        WorkerMainPanel workerMainPanel = new WorkerMainPanel(db, (Worker) finalUser);
+                        workerMainPanel.createAndShowGUI();
+                    }
                 });
             } else {
                 JOptionPane.showMessageDialog(frame, "Niepoprawne dane logowania!", "Błąd", JOptionPane.ERROR_MESSAGE);
