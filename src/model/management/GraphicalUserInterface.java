@@ -17,9 +17,11 @@ public class GraphicalUserInterface {
     private JFrame frame;
     private JButton loginButton;
     private JButton registerButton;
+    private DataBase db;
 
     public GraphicalUserInterface(ManagementSystem managementSystem) {
         this.managementSystem = managementSystem;
+        this.db = new DataBase();
 //        createAndShowGUI();
     }
 
@@ -43,17 +45,16 @@ public class GraphicalUserInterface {
 
         registerButton.addActionListener(e -> {
             if (registerForm == null) {
-                registerForm = new RegisterForm(managementSystem);
+                registerForm = new RegisterForm(db);
             }
             frame.dispose();
         });
 
         loginButton.addActionListener(e -> {
             if (loginForm == null) {
-                DataBase db = new DataBase(managementSystem);
                 loginForm = new LoginForm(db, frame, managementSystem);
             }
-            frame.dispose();
+//            frame.dispose();
         });
 
         frame.add(loginButton);

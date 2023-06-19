@@ -2,6 +2,7 @@ package model.components;
 
 import interfaces.UserFactoryInterface;
 import model.management.DataBase;
+import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
 import model.user.*;
 
@@ -10,14 +11,13 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Objects;
 
 public class RegisterForm {
 
-    private ManagementSystem managementSystem;
+    private DataBase db;
 
-    public RegisterForm(ManagementSystem managementSystem) {
-        this.managementSystem = managementSystem;
+    public RegisterForm(DataBase db) {
+        this.db = db;
         createAndShowGUI();
     }
 
@@ -56,7 +56,7 @@ public class RegisterForm {
 
         JLabel roleLabel = new JLabel("Rola:");
         String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANAGER};
-        JComboBox roleComboBox = new JComboBox(roles);
+        JComboBox<String> roleComboBox = new JComboBox<>(roles);
 
         JLabel salaryLabel = new JLabel("Pensja:");
         JTextField salaryField = new JTextField(20);
@@ -97,6 +97,33 @@ public class RegisterForm {
         formPanel.add(managementStyleLabel, labelConstraints);
         formPanel.add(managementStyleField, fieldConstraints);
 
+        // Wyświetl pola "salary" i "managementStyle" w zależności od wybranej roli
+        roleComboBox.addActionListener(e -> {
+            String selectedRole = (String) roleComboBox.getSelectedItem();
+            if (selectedRole != null) {
+                switch (selectedRole) {
+                    case User.ROLE_WORKER:
+                        salaryLabel.setVisible(true);
+                        salaryField.setVisible(true);
+                        managementStyleLabel.setVisible(false);
+                        managementStyleField.setVisible(false);
+                        break;
+                    case User.ROLE_MANAGER:
+                        salaryLabel.setVisible(true);
+                        salaryField.setVisible(true);
+                        managementStyleLabel.setVisible(true);
+                        managementStyleField.setVisible(true);
+                        break;
+                    default:
+                        salaryLabel.setVisible(false);
+                        salaryField.setVisible(false);
+                        managementStyleLabel.setVisible(false);
+                        managementStyleField.setVisible(false);
+                        break;
+                }
+            }
+        });
+
         // Dodaj przycisk "Zarejestruj się"
         JButton submitButton = new JButton("Zarejestruj się");
         GridBagConstraints buttonConstraints = new GridBagConstraints();
@@ -104,34 +131,6 @@ public class RegisterForm {
         buttonConstraints.gridy = 10;
         buttonConstraints.anchor = GridBagConstraints.WEST;
         buttonConstraints.insets = new Insets(30, 0, 0, 10);
-
-        roleComboBox.addActionListener(e -> {
-            String selectedRole = (String)roleComboBox.getSelectedItem();
-
-            switch (Objects.requireNonNull(selectedRole)) {
-                case User.ROLE_WORKER -> {
-                    salaryLabel.setVisible(true);
-                    salaryField.setVisible(true);
-                    managementStyleLabel.setVisible(false);
-                    managementStyleField.setVisible(false);
-                }
-                case User.ROLE_MANAGER -> {
-                    salaryLabel.setVisible(true);
-                    salaryField.setVisible(true);
-                    managementStyleLabel.setVisible(true);
-                    managementStyleField.setVisible(true);
-                }
-                default -> {
-                    salaryLabel.setVisible(false);
-                    salaryField.setVisible(false);
-                    managementStyleLabel.setVisible(false);
-                    managementStyleField.setVisible(false);
-                }
-            }
-
-            formPanel.revalidate();
-            formPanel.repaint();
-        });
 
         submitButton.addActionListener(e -> {
             try {
@@ -164,10 +163,11 @@ public class RegisterForm {
                 }
 
                 if (newUser != null) {
-                    managementSystem.addUser(newUser);
-//                    DataBase db = new DataBase(managementSystem);
-//                    db.saveUser(newUser);
+                    db.addUser(newUser);
                     JOptionPane.showMessageDialog(frame, "Rejestracja powiodła się!");
+                    GraphicalUserInterface gui = new GraphicalUserInterface(new ManagementSystem());
+                    gui.createAndShowGUI();
+                    frame.dispose();
                 }
             } catch (DateTimeParseException ex) {
                 JOptionPane.showMessageDialog(frame, "Nieprawidłowy format daty. Proszę użyć formatu: RRRR-MM-DD");
