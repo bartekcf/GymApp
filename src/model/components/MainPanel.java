@@ -11,6 +11,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 public class MainPanel {
     private JFrame frame;
@@ -62,6 +63,45 @@ public class MainPanel {
             // Implementuj logikę aktualizacji profilu
         });
 
+        JButton checkGymPass = new JButton("Sprawdź stan karnetu");
+        checkGymPass.addActionListener(e -> {
+            JDialog gymPassDialog = new JDialog(frame, "Stan Karnetu", true);
+            gymPassDialog.setSize(300, 200);
+            gymPassDialog.setLayout(new GridBagLayout());
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+
+            JLabel statusLabel = new JLabel(clubMember.isPaid() ? "Karnet jest opłacony." : "Karnet nie jest opłacony.");
+            gbc.gridy = 0;
+            gymPassDialog.add(statusLabel, gbc);
+
+            if (!clubMember.isPaid()) {
+                Random rand = new Random();
+                double amount = 50 + rand.nextInt(150); // losowo generuje kwotę od 50 do 200
+                JLabel amountLabel = new JLabel("Kwota do zapłaty: " + amount + " ZL");
+                gbc.gridy = 1;
+                gymPassDialog.add(amountLabel, gbc);
+
+                JButton payButton = new JButton("Opłać");
+                payButton.addActionListener(event -> {
+                    clubMember.setPaid(true);
+                    JOptionPane.showMessageDialog(gymPassDialog, "Karnet został opłacony.");
+                    gymPassDialog.dispose();
+                });
+                gbc.gridy = 2;
+                gymPassDialog.add(payButton, gbc);
+            }
+
+            JButton returnButton = new JButton("Powrót");
+            returnButton.addActionListener(event -> gymPassDialog.dispose());
+            gbc.gridy = 3;
+            gymPassDialog.add(returnButton, gbc);
+
+            gymPassDialog.setVisible(true);
+        });
+
+
         // Dodaj elementy do panelu
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -75,6 +115,9 @@ public class MainPanel {
 
         gbc.gridy = 3;
         frame.getContentPane().add(updateProfileButton, gbc);
+
+        gbc.gridy = 4;
+        frame.getContentPane().add(checkGymPass, gbc);
 
         // Wyświetl ramkę
         frame.setVisible(true);

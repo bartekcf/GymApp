@@ -34,9 +34,9 @@ public class ClubMember extends User implements Serializable {
         this.accountStatus = accountStatus;
     }
 
-//    public boolean isPaid() {
-//        return isPaid;
-//    }
+    public boolean isPaid() {
+        return isPaid;
+    }
 
     public void setPaid(boolean paid) {
         isPaid = paid;
