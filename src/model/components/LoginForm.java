@@ -9,10 +9,7 @@ import model.user.Worker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class LoginForm {
@@ -21,8 +18,8 @@ public class LoginForm {
     private JFrame frame;
     private ManagementSystem managementSystem;
 
-    public LoginForm(DataBase db, JFrame frame, ManagementSystem managementSystem) {
-        this.db = db;
+    public LoginForm(JFrame frame, ManagementSystem managementSystem) {
+        this.db = DataBase.deserialize();  // Deserializujemy bazę danych przy inicjalizacji
         this.frame = frame;
         this.managementSystem = managementSystem;
         createAndShowGUI();
@@ -104,36 +101,14 @@ public class LoginForm {
             String password = new String(passwordField.getPassword());
             String selectedRole = (String) roleComboBox.getSelectedItem();
 
-            Map<String, ObjectInputStream> fileStreams = db.loadSerializedFiles();
-
-            User user = null;
-            try {
-                switch (Objects.requireNonNull(selectedRole)) {
-                    case User.ROLE_CLUB_MEMBER -> {
-                        List<ClubMember> clubMembers = (List<ClubMember>) fileStreams.get(DataBase.USERS_FILE).readObject();
-                        user = clubMembers.stream()
-                                .filter(cm -> cm.getClubMemberLogin().equals(login) && cm.getPassword().equals(password))
-                                .findFirst()
-                                .orElse(null);
-                    }
-                    case User.ROLE_WORKER -> {
-                        List<Worker> workers = (List<Worker>) fileStreams.get(DataBase.USERS_FILE).readObject();
-                        user = workers.stream()
-                                .filter(w -> w.getWorkerLogin().equals(login) && w.getPassword().equals(password))
-                                .findFirst()
-                                .orElse(null);
-                    }
-                    case User.ROLE_MANAGER -> {
-                        List<Manager> managers = (List<Manager>) fileStreams.get(DataBase.USERS_FILE).readObject();
-                        user = managers.stream()
-                                .filter(m -> m.getManagerLogin().equals(login) && m.getPassword().equals(password))
-                                .findFirst()
-                                .orElse(null);
-                    }
-                }
-            } catch (IOException | ClassNotFoundException ioException) {
-                ioException.printStackTrace();
-            }
+            List<User> users = db.getUsers();  // Pobieramy listę wszystkich użytkowników
+            User user = users.stream()
+                    .filter(u -> u.getLogin().equals(login) && u.getPassword().equals(password))
+                    .filter(u -> (selectedRole.equals(User.ROLE_CLUB_MEMBER) && u instanceof ClubMember)
+                            || (selectedRole.equals(User.ROLE_WORKER) && u instanceof Worker)
+                            || (selectedRole.equals(User.ROLE_MANAGER) && u instanceof Manager))
+                    .findFirst()
+                    .orElse(null);
 
             if (user != null) {
                 frame.dispose();
@@ -147,8 +122,7 @@ public class LoginForm {
                     } else if (finalUser instanceof Worker) {
                         WorkerMainPanel workerMainPanel = new WorkerMainPanel(db, (Worker) finalUser);
                         workerMainPanel.createAndShowGUI();
-                    }
-                    else {
+                    } else if (finalUser instanceof Manager) {
                         ManagerMainPanel managerMainPanel = new ManagerMainPanel(db, (Manager) finalUser);
                         managerMainPanel.createAndShowGUI();
                     }

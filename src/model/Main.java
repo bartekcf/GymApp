@@ -2,7 +2,6 @@ package model;
 
 import model.gym.Activity;
 import model.gym.GymRoom;
-import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
 import model.user.ClubMember;

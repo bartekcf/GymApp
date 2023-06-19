@@ -1,81 +1,55 @@
 package model.management;
 
-import model.gym.Activity;
-import model.gym.GymRoom;
-import model.user.ClubMember;
-import model.user.Manager;
 import model.user.User;
-import model.user.Worker;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DataBase implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private List<User> users = new ArrayList<>();
     public static final String MAIN_FOLDER = "src/files/";
     public static final String USERS_FILE = MAIN_FOLDER + "users.ser";
 
-    private List<User> users;
-    private List<Activity> activities;
-    private List<GymRoom> gymRooms;
-
-    public DataBase() {
-        this.users = new ArrayList<>();
-        this.activities = new ArrayList<>();
-        this.gymRooms = new ArrayList<>();
+    public void addUser(User user) {
+        this.users.add(user);
+        serialize();
     }
 
-    public void addUser(User user) {
-        users.add(user);
-        saveData();
+    public void serialize() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(USERS_FILE);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public static DataBase deserialize() {
+        DataBase db = null;
+        try {
+            FileInputStream fileIn = new FileInputStream(USERS_FILE);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            db = (DataBase) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+            return new DataBase();
+        } catch (ClassNotFoundException c) {
+            System.out.println("DataBase class not found");
+            c.printStackTrace();
+            return new DataBase();
+        }
+        return db;
     }
 
     public List<User> getUsers() {
-        return users;
-    }
-
-    public void addActivity(Activity activity) {
-        activities.add(activity);
-    }
-
-    public List<Activity> getActivities() {
-        return activities;
-    }
-
-    public void addGymRoom(GymRoom gymRoom) {
-        gymRooms.add(gymRoom);
-    }
-
-    public List<GymRoom> getGymRooms() {
-        return gymRooms;
-    }
-
-    public void saveData() {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(USERS_FILE))) {
-            out.writeObject(users);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadData() {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(USERS_FILE))) {
-            users = (List<User>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Map<String, ObjectInputStream> loadSerializedFiles() {
-        Map<String, ObjectInputStream> fileStreams = new HashMap<>();
-        try {
-            ObjectInputStream usersInputStream = new ObjectInputStream(new FileInputStream(USERS_FILE));
-            fileStreams.put(USERS_FILE, usersInputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return fileStreams;
+        return this.users;
     }
 }

@@ -45,14 +45,14 @@ public class GraphicalUserInterface {
 
         registerButton.addActionListener(e -> {
             if (registerForm == null) {
-                registerForm = new RegisterForm(db);
+                registerForm = new RegisterForm();
             }
             frame.dispose();
         });
 
         loginButton.addActionListener(e -> {
             if (loginForm == null) {
-                loginForm = new LoginForm(db, frame, managementSystem);
+                loginForm = new LoginForm(frame, managementSystem);
             }
 //            frame.dispose();
         });

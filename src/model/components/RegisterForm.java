@@ -16,8 +16,8 @@ public class RegisterForm {
 
     private DataBase db;
 
-    public RegisterForm(DataBase db) {
-        this.db = db;
+    public RegisterForm() {
+        this.db = DataBase.deserialize();
         createAndShowGUI();
     }
 
@@ -102,24 +102,24 @@ public class RegisterForm {
             String selectedRole = (String) roleComboBox.getSelectedItem();
             if (selectedRole != null) {
                 switch (selectedRole) {
-                    case User.ROLE_WORKER:
+                    case User.ROLE_WORKER -> {
                         salaryLabel.setVisible(true);
                         salaryField.setVisible(true);
                         managementStyleLabel.setVisible(false);
                         managementStyleField.setVisible(false);
-                        break;
-                    case User.ROLE_MANAGER:
+                    }
+                    case User.ROLE_MANAGER -> {
                         salaryLabel.setVisible(true);
                         salaryField.setVisible(true);
                         managementStyleLabel.setVisible(true);
                         managementStyleField.setVisible(true);
-                        break;
-                    default:
+                    }
+                    default -> {
                         salaryLabel.setVisible(false);
                         salaryField.setVisible(false);
                         managementStyleLabel.setVisible(false);
                         managementStyleField.setVisible(false);
-                        break;
+                    }
                 }
             }
         });
