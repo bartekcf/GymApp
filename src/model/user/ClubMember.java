@@ -8,23 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClubMember extends User implements Serializable {
-    private static int nextId = 1;
-    private int id;
     private String accountStatus;
     private boolean isPaid = false;
     private List<Activity> activities;  // lista zajęć, na które jest zapisany klubowicz
 
     public ClubMember(String firstName, String lastName, String login, String password, LocalDate birthDay, String userRole) {
         super(firstName, lastName, login, password, birthDay,userRole);
-        this.id = nextId++;
         this.activities = new ArrayList<>();
     }
 
-//    public ClubMember(){}
-
-    public int getId() {
-        return id;
-    }
 
     public String getAccountStatus() {
         return accountStatus;

@@ -1,9 +1,16 @@
 package model.user;
 
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 public abstract class User implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private static int nextId = 1;
+    private int id;
     private String firstName;
     private String lastName;
     private String login;
@@ -17,6 +24,7 @@ public abstract class User implements Serializable {
     public static final String ROLE_MANAGER  = "Manager";
 
     public User(String firstName, String lastName, String login, String password, LocalDate birthDay, String userRole) {
+        this.id = nextId++;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
@@ -25,8 +33,16 @@ public abstract class User implements Serializable {
         this.userRole = userRole;
     }
 
+
 //    public User(){}
 
+    public int getId(){
+        return id;
+    }
+
+    public static void setNextId(int nextId) {
+        User.nextId = nextId;
+    }
     public String getFirstName() {
         return firstName;
     }

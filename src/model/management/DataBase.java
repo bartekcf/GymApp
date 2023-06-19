@@ -38,6 +38,15 @@ public class DataBase implements Serializable {
             db = (DataBase) in.readObject();
             in.close();
             fileIn.close();
+
+            // Ustalanie nextId na podstawie zdeserializowanych użytkowników
+            if (db != null && !db.getUsers().isEmpty()) {
+                int maxId = db.getUsers().stream()
+                        .mapToInt(User::getId)
+                        .max()
+                        .orElse(0);
+                User.setNextId(maxId + 1);
+            }
         } catch (IOException i) {
             i.printStackTrace();
             return new DataBase();
