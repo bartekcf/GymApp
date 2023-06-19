@@ -47,8 +47,8 @@ public class RegisterForm {
         JTextField nameField = new JTextField(20);
         JLabel surnameLabel = new JLabel("Nazwisko:");
         JTextField surnameField = new JTextField(20);
-        JLabel dobLabel = new JLabel("Data urodzenia:");
-        JTextField dobField = new JTextField(20);
+        JLabel birthdayLabel = new JLabel("Data urodzenia:");
+        JTextField birthdayField = new JTextField(20);
         JLabel loginLabel = new JLabel("Login:");
         JTextField loginField = new JTextField(20);
         JLabel passwordLabel = new JLabel("Hasło:");
@@ -82,8 +82,8 @@ public class RegisterForm {
         formPanel.add(nameField, fieldConstraints);
         formPanel.add(surnameLabel, labelConstraints);
         formPanel.add(surnameField, fieldConstraints);
-        formPanel.add(dobLabel, labelConstraints);
-        formPanel.add(dobField, fieldConstraints);
+        formPanel.add(birthdayLabel, labelConstraints);
+        formPanel.add(birthdayField, fieldConstraints);
         formPanel.add(loginLabel, labelConstraints);
         formPanel.add(loginField, fieldConstraints);
         formPanel.add(passwordLabel, labelConstraints);
@@ -136,26 +136,45 @@ public class RegisterForm {
             try {
                 String name = nameField.getText();
                 String surname = surnameField.getText();
-                LocalDate dob = LocalDate.parse(dobField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate birthday = LocalDate.parse(birthdayField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String login = loginField.getText();
                 String password = new String(passwordField.getPassword());
                 String role = (String) roleComboBox.getSelectedItem();
+
+                // Sprawdź, czy login jest unikalny
+                boolean isUnique = db.getUsers().stream().noneMatch(u -> u.getLogin().equals(login));
+                if (!isUnique) {
+                    JOptionPane.showMessageDialog(frame, "Podany login jest już zajęty. Wybierz inny.");
+                    return;
+                }
+
+                LocalDate eighteenYearsAgo = LocalDate.now().minusYears(18);
+                if (birthday.isAfter(eighteenYearsAgo)) {
+                    JOptionPane.showMessageDialog(frame, "Użytkownik musi mieć co najmniej 18 lat.");
+                    return;
+                }
+
+                // Sprawdź, czy długość hasła wynosi co najmniej 5 znaków
+                if (password.length() < 5) {
+                    JOptionPane.showMessageDialog(frame, "Hasło musi zawierać co najmniej 5 znaków.");
+                    return;
+                }
 
                 UserFactoryInterface factory;
                 User newUser = null;
 
                 if (role.equalsIgnoreCase(User.ROLE_CLUB_MEMBER)) {
                     factory = new ClubMemberFactory();
-                    newUser = factory.create(name, surname, login, password, dob);
+                    newUser = factory.create(name, surname, login, password, birthday);
                 } else if (role.equalsIgnoreCase(User.ROLE_WORKER)) {
                     factory = new WorkerFactory();
-                    newUser = factory.create(name, surname, login, password, dob);
+                    newUser = factory.create(name, surname, login, password, birthday);
                     if (newUser instanceof Worker) {
                         ((Worker) newUser).setSalary(Double.parseDouble(salaryField.getText()));
                     }
                 } else if (role.equalsIgnoreCase(User.ROLE_MANAGER)) {
                     factory = new ManagerFactory();
-                    newUser = factory.create(name, surname, login, password, dob);
+                    newUser = factory.create(name, surname, login, password, birthday);
                     if (newUser instanceof Manager) {
                         ((Manager) newUser).setSalary(Double.parseDouble(salaryField.getText()));
                         ((Manager) newUser).setManagementStyle(managementStyleField.getText());
