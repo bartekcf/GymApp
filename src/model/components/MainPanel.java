@@ -8,6 +8,8 @@ import model.user.ClubMember;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -104,6 +106,19 @@ public class MainPanel {
             gymPassDialog.setVisible(true);
         });
 
+        // Dodaj przycisk wylogowania jako rozwijane menu
+        JMenuBar menuBar = new JMenuBar();
+        JMenu optionsMenu = new JMenu("Menu");
+
+        JMenuItem logoutMenuItem = new JMenuItem("Wyloguj");
+        logoutMenuItem.addActionListener(e -> {
+            GraphicalUserInterface gui = new GraphicalUserInterface(managementSystem);
+            gui.createAndShowGUI();
+            frame.dispose();
+        });
+        optionsMenu.add(logoutMenuItem);
+        menuBar.add(optionsMenu);
+        frame.setJMenuBar(menuBar);
 
         // Dodaj elementy do panelu
         frame.getContentPane().setLayout(new GridBagLayout());

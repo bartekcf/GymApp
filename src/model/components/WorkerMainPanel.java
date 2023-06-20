@@ -8,6 +8,8 @@ import model.user.Worker;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class WorkerMainPanel {
@@ -53,7 +55,7 @@ public class WorkerMainPanel {
         activityListButton.addActionListener(e -> {
             ActivityList activityList = new ActivityList(db, worker);
             activityList.setVisible(true);
-//            frame.dispose(); nie zamykam tutaj bo robie przycisk powrót który tutaj wraca
+            //            frame.dispose(); nie zamykam tutaj bo robie przycisk powrót który tutaj wraca
         });
 
         // Dodaj elementy do panelu
@@ -69,6 +71,19 @@ public class WorkerMainPanel {
 
         gbc.gridy = 3;
         frame.getContentPane().add(activityListButton, gbc);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu optionsMenu = new JMenu("Menu");
+        JMenuItem logoutMenuItem = new JMenuItem("Wyloguj");
+        logoutMenuItem.addActionListener(e -> {
+            GraphicalUserInterface gui = new GraphicalUserInterface(managementSystem);
+            gui.createAndShowGUI();
+            frame.dispose();
+        });
+
+        optionsMenu.add(logoutMenuItem);
+        menuBar.add(optionsMenu);
+        frame.setJMenuBar(menuBar);
 
         // Wyświetl ramkę
         frame.setVisible(true);
