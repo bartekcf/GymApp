@@ -52,9 +52,9 @@ public class GraphicalUserInterface {
 
         loginButton.addActionListener(e -> {
             if (loginForm == null) {
-                loginForm = new LoginForm(frame, managementSystem);
+                loginForm = new LoginForm(managementSystem);
             }
-//            frame.dispose();
+             frame.dispose();
         });
 
         frame.add(loginButton);

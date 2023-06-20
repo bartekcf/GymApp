@@ -18,9 +18,11 @@ public class LoginForm {
     private JFrame frame;
     private ManagementSystem managementSystem;
 
-    public LoginForm(JFrame frame, ManagementSystem managementSystem) {
+    public LoginForm(ManagementSystem managementSystem) {
         this.db = DataBase.deserialize();  // Deserializujemy bazę danych przy inicjalizacji
-        this.frame = frame;
+        this.frame = new JFrame("Logowanie"); // Nowa ramka
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.frame.setSize(1000, 600);
         this.managementSystem = managementSystem;
         createAndShowGUI();
     }
