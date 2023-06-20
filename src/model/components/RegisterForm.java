@@ -129,8 +129,15 @@ public class RegisterForm {
         GridBagConstraints buttonConstraints = new GridBagConstraints();
         buttonConstraints.gridx = 1;
         buttonConstraints.gridy = 10;
-        buttonConstraints.anchor = GridBagConstraints.WEST;
+        buttonConstraints.anchor = GridBagConstraints.CENTER;
         buttonConstraints.insets = new Insets(30, 0, 0, 10);
+
+        JButton backButton = new JButton("Cofnij");
+        GridBagConstraints buttonConstraintsBack = new GridBagConstraints();
+        buttonConstraintsBack.gridx = 1;
+        buttonConstraintsBack.gridy = 11;
+        buttonConstraintsBack.anchor = GridBagConstraints.CENTER;
+        buttonConstraintsBack.insets = new Insets(30, 0, 0, 10);
 
         submitButton.addActionListener(e -> {
             try {
@@ -200,6 +207,7 @@ public class RegisterForm {
         });
 
         formPanel.add(submitButton, buttonConstraints);
+        formPanel.add(backButton, buttonConstraintsBack);
 
         frame.add(formPanel);
         frame.setVisible(true);

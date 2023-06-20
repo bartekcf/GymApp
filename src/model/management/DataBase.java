@@ -132,7 +132,6 @@ public class DataBase implements Serializable {
 
     public void addActivity(Activity activity) {
         this.activities.add(activity);
-//        serializeActivities(activities);
     }
 
     public void serializeActivities(List<Activity> activities) {
