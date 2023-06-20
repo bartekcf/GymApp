@@ -1,5 +1,6 @@
 package model.components;
 
+import model.management.BackgroundImage;
 import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
@@ -15,7 +16,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class LoginForm {
-
+    private final String MAIN_IMG = "src/files/images/login.jpg";
     private DataBase db;
     private JFrame frame;
     private ManagementSystem managementSystem;
@@ -37,21 +38,18 @@ public class LoginForm {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(1000, 600);
         frame.setLayout(new GridBagLayout());
-        frame.getContentPane().setBackground(Color.GRAY);
+
+        // Tło
+        BackgroundImage backgroundImage = new BackgroundImage(MAIN_IMG);
+        backgroundImage.setLayout(new GridBagLayout());
+        frame.setContentPane(backgroundImage);
 
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridBagLayout());
-        formPanel.setBackground(Color.GRAY);
-
-        JLabel headerLabel = new JLabel("<html><h3 style='font-size: 24px;'>Logowanie</h3></html>", SwingConstants.CENTER);
-        GridBagConstraints headerConstraints = new GridBagConstraints();
-        headerConstraints.gridx = 0;
-        headerConstraints.gridy = 0;
-        headerConstraints.gridwidth = 2;
-        headerConstraints.insets = new Insets(20, 10, 30, 10);
-        formPanel.add(headerLabel, headerConstraints);
+        formPanel.setOpaque(false);
 
         JLabel roleLabel = new JLabel("Rola:");
+        roleLabel.setForeground(Color.WHITE);
         String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANAGER};
         JComboBox<String> roleComboBox = new JComboBox<>(roles);
 
@@ -70,8 +68,10 @@ public class LoginForm {
         formPanel.add(roleComboBox, roleFieldConstraints);
 
         JLabel loginLabel = new JLabel("Login:");
+        loginLabel.setForeground(Color.WHITE);
         JTextField loginField = new JTextField(20);
         JLabel passwordLabel = new JLabel("Hasło:");
+        passwordLabel.setForeground(Color.WHITE);
         JPasswordField passwordField = new JPasswordField(20);
 
         GridBagConstraints labelConstraints = new GridBagConstraints();

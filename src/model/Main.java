@@ -44,7 +44,7 @@ public class Main {
 //        System.out.println(aktywnosc1.getName());
 //        System.out.println(aktywnosc1.getMembers());
 //
-//        aktywnosc1.removeFromActivity(marek);f
+//        aktywnosc1.removeFromActivity(marek);
 //
 //        System.out.println(aktywnosc1.getMembers());
 

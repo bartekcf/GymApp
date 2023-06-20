@@ -1,6 +1,7 @@
 package model.components;
 
 import model.gym.Activity;
+import model.management.BackgroundImage;
 import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
@@ -15,7 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
+import static model.management.GraphicalUserInterface.FRAME_HEIGHT;
+import static model.management.GraphicalUserInterface.FRAME_WIDTH;
+
 public class MainPanel {
+    private static String IMG = "src/files/images/cm.jpg";
     private JFrame frame;
     private ManagementSystem managementSystem;
     private DataBase db;
@@ -30,21 +35,11 @@ public class MainPanel {
     public void createAndShowGUI() {
         frame = new JFrame("Panel Główny");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(GraphicalUserInterface.FRAME_WIDTH, GraphicalUserInterface.FRAME_HEIGHT);
+        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setLayout(new GridBagLayout());
 
-        // Dodanie napisu "Typ konta: członek siłowni" w prawym górnym rogu
-        JLabel accountTypeLabel = new JLabel("Typ konta: członek siłowni");
-        accountTypeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        GridBagConstraints gbcAccountTypeLabel = new GridBagConstraints();
-        gbcAccountTypeLabel.anchor = GridBagConstraints.NORTHEAST;
-        gbcAccountTypeLabel.insets = new Insets(10, 10, 0, 10);
-        gbcAccountTypeLabel.gridx = 1;
-        gbcAccountTypeLabel.gridy = 0;
-        gbcAccountTypeLabel.weightx = 1.0;
-        gbcAccountTypeLabel.weighty = 0.0;
-        gbcAccountTypeLabel.gridwidth = GridBagConstraints.REMAINDER;
-        frame.getContentPane().add(accountTypeLabel, gbcAccountTypeLabel);
+        BackgroundImage CMPanel = new BackgroundImage(IMG);
+        CMPanel.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 
         JLabel welcomeLabel = new JLabel("Witaj, " + clubMember.getFirstName() + " " + clubMember.getLastName() + "!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -121,21 +116,25 @@ public class MainPanel {
         frame.setJMenuBar(menuBar);
 
         // Dodaj elementy do panelu
-        frame.getContentPane().setLayout(new GridBagLayout());
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setOpaque(false); // Ustawienie tła panelu na przezroczyste
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 10, 10);
-        frame.getContentPane().add(welcomeLabel, gbc);
+        contentPanel.add(welcomeLabel, gbc);
+
+        gbc.gridy = 1;
+        contentPanel.add(showActivitiesButton, gbc);
 
         gbc.gridy = 2;
-        frame.getContentPane().add(showActivitiesButton, gbc);
+        contentPanel.add(updateProfileButton, gbc);
 
         gbc.gridy = 3;
-        frame.getContentPane().add(updateProfileButton, gbc);
+        contentPanel.add(checkGymPass, gbc);
 
-        gbc.gridy = 4;
-        frame.getContentPane().add(checkGymPass, gbc);
+        frame.setContentPane(CMPanel);
+        frame.getContentPane().add(contentPanel);
 
         // Wyświetl ramkę
         frame.setVisible(true);

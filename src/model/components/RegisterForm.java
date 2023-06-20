@@ -34,7 +34,7 @@ public class RegisterForm {
         formPanel.setBackground(Color.GRAY);
 
         // Dodaj nagłówek
-        JLabel headerLabel = new JLabel("<html><h3 style='font-size: 24px;'>Rejestracja</h3></html>", SwingConstants.CENTER);
+        JLabel headerLabel = new JLabel("<html><h3 style='font-size: 24px;'>Rejestracja", SwingConstants.RIGHT);
         GridBagConstraints headerConstraints = new GridBagConstraints();
         headerConstraints.gridx = 0;
         headerConstraints.gridy = 0;
@@ -204,6 +204,12 @@ public class RegisterForm {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Wystąpił błąd podczas rejestracji: " + ex.getMessage());
             }
+        });
+
+        backButton.addActionListener(e -> {
+            GraphicalUserInterface gui = new GraphicalUserInterface(new ManagementSystem());
+            gui.createAndShowGUI();
+            frame.dispose();
         });
 
         formPanel.add(submitButton, buttonConstraints);
