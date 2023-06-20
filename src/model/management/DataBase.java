@@ -1,17 +1,22 @@
 package model.management;
 
+import model.user.ClubMember;
 import model.user.User;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataBase implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private List<User> users = new ArrayList<>();
+    private static Map<Integer, Boolean> gymPassStatus = new HashMap<>();
     public static final String MAIN_FOLDER = "src/files/";
     public static final String USERS_FILE = MAIN_FOLDER + "users.ser";
+    public static final String USER_GYM_PASS_STATUS = MAIN_FOLDER + "is_paid.ser";
 
     public void addUser(User user) {
         this.users.add(user);
@@ -22,7 +27,7 @@ public class DataBase implements Serializable {
         try {
             FileOutputStream fileOut = new FileOutputStream(USERS_FILE);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
+            out.writeObject(this.users);  // zapisuj tylko listę użytkowników
             out.close();
             fileOut.close();
         } catch (IOException i) {
@@ -31,17 +36,17 @@ public class DataBase implements Serializable {
     }
 
     public static DataBase deserialize() {
-        DataBase db = null;
+        List<User> users;
         try {
             FileInputStream fileIn = new FileInputStream(USERS_FILE);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            db = (DataBase) in.readObject();
+            users = (List<User>) in.readObject();  // odczytuj tylko listę użytkowników
             in.close();
             fileIn.close();
 
             // Ustalanie nextId na podstawie zdeserializowanych użytkowników
-            if (db != null && !db.getUsers().isEmpty()) {
-                int maxId = db.getUsers().stream()
+            if (users != null && !users.isEmpty()) {
+                int maxId = users.stream()
                         .mapToInt(User::getId)
                         .max()
                         .orElse(0);
@@ -55,10 +60,70 @@ public class DataBase implements Serializable {
             c.printStackTrace();
             return new DataBase();
         }
+        DataBase db = new DataBase();
+        db.users = users;  // ustaw listę użytkowników dla bieżącej instancji
         return db;
     }
+
 
     public List<User> getUsers() {
         return this.users;
     }
+
+    public void updateUserStatus(ClubMember clubMember) {
+        gymPassStatus.put(clubMember.getId(), clubMember.isPaid());
+        serializeUserStatus();
+    }
+
+
+    public void serializeUserStatus() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(USER_GYM_PASS_STATUS);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this.gymPassStatus); // zapisuj tylko gymPassStatus
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public static DataBase deserializeUserStatus() {
+        try {
+            FileInputStream fileIn = new FileInputStream(USER_GYM_PASS_STATUS);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            gymPassStatus = (Map<Integer, Boolean>) in.readObject();
+            in.close();
+            fileIn.close();
+
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Nie znaleziono klasy");
+            c.printStackTrace();
+        }
+        return new DataBase();
+    }
+
+
+
+
+    public Map<Integer, Boolean> getMembershipStatus() {
+        return gymPassStatus;
+    }
+
+    public void updateUserMembershipStatus() {
+        DataBase membershipStatusDb = DataBase.deserializeUserStatus();
+
+        // Aktualizacja statusów opłacenia dla użytkowników
+        for (User user : this.users) {
+            if (user instanceof ClubMember) {
+                Boolean isPaid = membershipStatusDb.getMembershipStatus().get(user.getId());
+                if (isPaid != null) {
+                    ((ClubMember) user).setPaid(isPaid);
+                }
+            }
+        }
+    }
+
 }

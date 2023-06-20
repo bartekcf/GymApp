@@ -21,6 +21,7 @@ public class MainPanel {
 
     public MainPanel(DataBase db, ClubMember clubMember) {
         this.db = db;
+        this.db.updateUserMembershipStatus();
         this.clubMember = clubMember;
     }
 
@@ -72,7 +73,8 @@ public class MainPanel {
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.insets = new Insets(5, 5, 5, 5);
 
-            JLabel statusLabel = new JLabel(clubMember.isPaid() ? "Karnet jest opłacony." : "Karnet nie jest opłacony.");
+            boolean isPaid = db.getMembershipStatus().getOrDefault(clubMember.getId(), false);
+            JLabel statusLabel = new JLabel(isPaid ? "Karnet jest opłacony." : "Karnet nie jest opłacony.");
             gbc.gridy = 0;
             gymPassDialog.add(statusLabel, gbc);
 
@@ -86,6 +88,7 @@ public class MainPanel {
                 JButton payButton = new JButton("Opłać");
                 payButton.addActionListener(event -> {
                     clubMember.setPaid(true);
+                    db.updateUserStatus(clubMember);
                     JOptionPane.showMessageDialog(gymPassDialog, "Karnet został opłacony.");
                     gymPassDialog.dispose();
                 });
