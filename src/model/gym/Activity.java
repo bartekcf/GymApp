@@ -3,7 +3,7 @@ package model.gym;
 import model.user.ClubMember;
 import model.user.Worker;
 
-import java.io.Serializable;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,9 @@ public class Activity implements Serializable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Worker worker;
-    private List<ClubMember> clubMembers;  // lista klubowiczów zapisanych na zajęcia
+    private List<ClubMember> clubMembers;
 
-    public Activity(String name, LocalDateTime startTime, LocalDateTime endTime,  Worker worker) {
+    public Activity(String name, LocalDateTime startTime, LocalDateTime endTime, Worker worker) {
         this.id = nextId++;
         this.name = name;
         this.startTime = startTime;

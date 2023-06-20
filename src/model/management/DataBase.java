@@ -1,5 +1,6 @@
 package model.management;
 
+import model.gym.Activity;
 import model.user.ClubMember;
 import model.user.User;
 
@@ -14,9 +15,12 @@ public class DataBase implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<User> users = new ArrayList<>();
     private static Map<Integer, Boolean> gymPassStatus = new HashMap<>();
+    private List<Activity> activities = new ArrayList<>();
     public static final String MAIN_FOLDER = "src/files/";
     public static final String USERS_FILE = MAIN_FOLDER + "users.ser";
     public static final String USER_GYM_PASS_STATUS = MAIN_FOLDER + "is_paid.ser";
+    public static final String ACTIVITIES_FILE = MAIN_FOLDER + "activities.ser";
+
 
     public void addUser(User user) {
         this.users.add(user);
@@ -125,5 +129,40 @@ public class DataBase implements Serializable {
             }
         }
     }
+
+    public void addActivity(Activity activity) {
+        this.activities.add(activity);
+//        serializeActivities(activities);
+    }
+
+    public void serializeActivities(List<Activity> activities) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(ACTIVITIES_FILE);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(activities);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+
+    public static List<Activity> deserializeActivities() {
+        List<Activity> activities;
+        try {
+            FileInputStream fileIn = new FileInputStream(ACTIVITIES_FILE);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            activities = (List<Activity>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+        return activities;
+    }
+
+
 
 }

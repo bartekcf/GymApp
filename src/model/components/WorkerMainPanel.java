@@ -43,21 +43,17 @@ public class WorkerMainPanel {
         JLabel welcomeLabel = new JLabel("Witaj, " + worker.getFirstName() + " " + worker.getLastName() + "!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
-        JButton showCurrentActivitiesButton = new JButton("Pokaż dostępne zajęcia");
-        showCurrentActivitiesButton.addActionListener(e -> {
-            List<Activity> activities = worker.getActivities();
-            // Implementuj logikę wyświetlania listy zajęć
-        });
-
         JButton showActivitiesButton = new JButton("Pokaż moje zajęcia");
         showActivitiesButton.addActionListener(e -> {
             List<Activity> activities = worker.getActivities();
             // Implementuj logikę wyświetlania listy zajęć
         });
 
-        JButton updateProfileButton = new JButton("Aktualizuj mój profil");
-        updateProfileButton.addActionListener(e -> {
-            // Implementuj logikę aktualizacji profilu
+        JButton activityListButton = new JButton("Lista aktywności");
+        activityListButton.addActionListener(e -> {
+            ActivityList activityList = new ActivityList(db, worker);
+            activityList.setVisible(true);
+//            frame.dispose(); nie zamykam tutaj bo robie przycisk powrót który tutaj wraca
         });
 
         // Dodaj elementy do panelu
@@ -72,7 +68,7 @@ public class WorkerMainPanel {
         frame.getContentPane().add(showActivitiesButton, gbc);
 
         gbc.gridy = 3;
-        frame.getContentPane().add(updateProfileButton, gbc);
+        frame.getContentPane().add(activityListButton, gbc);
 
         // Wyświetl ramkę
         frame.setVisible(true);

@@ -1,7 +1,5 @@
 package model;
 
-import model.gym.Activity;
-import model.gym.GymRoom;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
 import model.user.ClubMember;
@@ -30,34 +28,33 @@ public class Main {
 //        System.out.println(marekprac.getId());
 //        System.out.println(mirekprac.getId());
 
-        System.out.println(mirekprac.getSalary());
-        mirekprac.setSalary(5000);
-        System.out.println(mirekprac.getSalary());
+//        System.out.println(mirekprac.getSalary());
+//        mirekprac.setSalary(5000);
+//        System.out.println(mirekprac.getSalary());
+//
+//        System.out.println(marekmen.getManagementStyle());
 
-        System.out.println(marekmen.getManagementStyle());
-
-        Activity aktywnosc1 = new Activity("Jogging", LocalDate.of(2023, 6, 12).atStartOfDay(), LocalDate.of(2023, 6, 12).atStartOfDay(), marekprac);
-
-        aktywnosc1.addToActivity(mirek);
-        aktywnosc1.addToActivity(marek);
+//        Activity aktywnosc1 = new Activity("Jogging", LocalDate.of(2023, 6, 12).atStartOfDay(), LocalDate.of(2023, 6, 12).atStartOfDay(), marekprac);
+//
+//        aktywnosc1.addToActivity(mirek);
+//        aktywnosc1.addToActivity(marek);
 
 
-        System.out.println(aktywnosc1.getWorker());
-        System.out.println(aktywnosc1.getName());
-        System.out.println(aktywnosc1.getMembers());
+//        System.out.println(aktywnosc1.getWorker());
+//        System.out.println(aktywnosc1.getName());
+//        System.out.println(aktywnosc1.getMembers());
+//
+//        aktywnosc1.removeFromActivity(marek);
+//
+//        System.out.println(aktywnosc1.getMembers());
 
-        aktywnosc1.removeFromActivity(marek);
+//        GymRoom pokoj222 = new GymRoom("Jogging Room", 222);
+//
+////        pokoj222.addActivity(aktywnosc1);
+//        System.out.println(pokoj222.getName() + " " + pokoj222.getRoomNumber());
+//
+//        System.out.println(pokoj222.getActivities());
 
-        System.out.println(aktywnosc1.getMembers());
-
-        GymRoom pokoj222 = new GymRoom("Jogging Room", 222);
-
-        pokoj222.addActivity(aktywnosc1);
-        System.out.println(pokoj222.getName() + " " + pokoj222.getRoomNumber());
-
-        System.out.println(pokoj222.getActivities());
-
-        ManagementSystem managementSystem = new ManagementSystem();
 
 //        DataBase database = new DataBase(managementSystem);
 
@@ -71,6 +68,8 @@ public class Main {
 //        System.out.println("Managers: " + database.getManagers());
 //        System.out.println("Activities: " + database.getActivities());
 //        System.out.println("Gym Rooms: " + database.getGymRooms());
+
+        ManagementSystem managementSystem = new ManagementSystem();
 
 
         GraphicalUserInterface GUI = new GraphicalUserInterface(managementSystem);
