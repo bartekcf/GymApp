@@ -27,14 +27,14 @@ public class LoginForm {
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.frame.setSize(1000, 600);
         this.managementSystem = managementSystem;
-        createAndShowGUI();
+//        createAndShowGUI();
     }
 
     public JFrame getFrame() {
         return frame;
     }
 
-    private void createAndShowGUI() {
+    public void createAndShowGUI() {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(1000, 600);
         frame.setLayout(new GridBagLayout());

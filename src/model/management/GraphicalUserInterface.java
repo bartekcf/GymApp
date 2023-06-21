@@ -61,13 +61,15 @@ public class GraphicalUserInterface {
         loginButton.addActionListener(e -> {
             if (loginForm == null) {
                 loginForm = new LoginForm(managementSystem);
+                loginForm.createAndShowGUI();
             }
             frame.dispose();
         });
 
         registerButton.addActionListener(e -> {
             if (registerForm == null) {
-                registerForm = new RegisterForm();
+                registerForm = new RegisterForm(true);
+                registerForm.createAndShowGUI();
             }
             frame.dispose();
         });

@@ -58,6 +58,13 @@ public class WorkerMainPanel {
             //            frame.dispose(); nie zamykam tutaj bo robie przycisk powrót który tutaj wraca
         });
 
+        JButton addClubMemberButton = new JButton("Dodaj klubowicza");
+        addClubMemberButton.addActionListener(e -> {
+            RegisterForm registerForm = new RegisterForm(false);
+            registerForm.createAndShowGUI();
+            frame.dispose();
+        });
+
         // Dodaj elementy do panelu
         frame.getContentPane().setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -71,6 +78,9 @@ public class WorkerMainPanel {
 
         gbc.gridy = 3;
         frame.getContentPane().add(activityListButton, gbc);
+
+        gbc.gridy = 4;
+        frame.getContentPane().add(addClubMemberButton, gbc);
 
         JMenuBar menuBar = new JMenuBar();
         JMenu optionsMenu = new JMenu("Menu");
