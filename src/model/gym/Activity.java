@@ -15,15 +15,17 @@ public class Activity implements Serializable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Worker worker;
+    private GymRoom room;
     private List<ClubMember> clubMembers;
 
-    public Activity(String name, LocalDateTime startTime, LocalDateTime endTime, Worker worker) {
+    public Activity(String name, LocalDateTime startTime, LocalDateTime endTime, Worker worker, GymRoom room) {  // Dodaj argument do konstruktora
         this.id = nextId++;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.worker = worker;
         this.clubMembers = new ArrayList<>();
+        this.room = room;  // Przypisz wartość do nowego pola
     }
 
     public int getId() {
@@ -66,6 +68,14 @@ public class Activity implements Serializable {
         return clubMembers;
     }
 
+    public GymRoom getRoom() {  // Metoda getter dla pokoju
+        return room;
+    }
+
+    public void setRoom(GymRoom room) {  // Metoda setter dla pokoju
+        this.room = room;
+    }
+
     public void addToActivity(ClubMember clubMember) {
         this.clubMembers.add(clubMember);
     }
@@ -74,12 +84,12 @@ public class Activity implements Serializable {
         this.clubMembers.remove(clubMember);
     }
 
-    public boolean canJoin(){
+    public boolean canJoin() {
         return LocalDateTime.now().isBefore(startTime);
     }
 
     @Override
     public String toString() {
-        return name + " " + "Godzina rozpoczęcia: " + startTime + " Prowadzący " + worker;
+        return name + " " + "Godzina rozpoczęcia: " + startTime + " Prowadzący: " + worker + " Pokój: " + room ;
     }
 }

@@ -1,6 +1,7 @@
 package model.components;
 
 import model.gym.Activity;
+import model.gym.GymRoom;
 import model.management.DataBase;
 import model.user.Worker;
 
@@ -24,7 +25,7 @@ public class ActivityForm {
     public void createAndShowGUI() {
         JFrame addActivityFrame = new JFrame("Dodaj aktywność");
         addActivityFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        addActivityFrame.setSize(400, 300);
+        addActivityFrame.setSize(500, 400);
         addActivityFrame.setLayout(new FlowLayout());
 
         JLabel nameLabel = new JLabel("Nazwa:");
@@ -42,25 +43,34 @@ public class ActivityForm {
         addActivityFrame.add(endTimeLabel);
         addActivityFrame.add(endTimeTextField);
 
+        JLabel roomLabel = new JLabel("Pokój:");
+        JComboBox<GymRoom> roomComboBox = new JComboBox<>(DataBase.deserializeRooms().toArray(new GymRoom[0]));
+        addActivityFrame.add(roomLabel);
+        addActivityFrame.add(roomComboBox);
+
         JButton addButton = new JButton("Dodaj");
         addButton.addActionListener(e -> {
             String name = nameTextField.getText();
             String startTimeString = startTimeTextField.getText();
             String endTimeString = endTimeTextField.getText();
 
-            // Parse the start and end times
             LocalDateTime startTime = LocalDateTime.parse(startTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             LocalDateTime endTime = LocalDateTime.parse(endTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-            // Create a new activity
-            Activity activity = new Activity(name, startTime, endTime, worker);
+            GymRoom selectedRoom = (GymRoom) roomComboBox.getSelectedItem();
 
-            // Get the latest list of activities
+            Activity activity = new Activity(name, startTime, endTime, worker, selectedRoom);
+
             List<Activity> activityList = DataBase.deserializeActivities();
-            // Add the new activity to the list
+
             activityList.add(activity);
-            // Serialize the updated list
             db.serializeActivities(activityList);
+
+            selectedRoom.addActivity(activity);
+            List<GymRoom> rooms = DataBase.deserializeRooms();
+            rooms.remove(selectedRoom);
+            rooms.add(selectedRoom);
+            db.serializeRooms(rooms);
 
             JOptionPane.showMessageDialog(addActivityFrame, "Zajęcia zostały dodane!.");
             addActivityFrame.dispose();

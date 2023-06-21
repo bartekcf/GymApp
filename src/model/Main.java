@@ -1,5 +1,7 @@
 package model;
 
+import model.gym.GymRoom;
+import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
 import model.user.ClubMember;
@@ -69,7 +71,29 @@ public class Main {
 //        System.out.println("Activities: " + database.getActivities());
 //        System.out.println("Gym Rooms: " + database.getGymRooms());
 
+        GymRoom room1 = new GymRoom("Fitness", 1);
+        GymRoom room2 = new GymRoom("Aerobik", 2);
+        GymRoom room3 = new GymRoom("Siłownia", 3);
+        GymRoom room4 = new GymRoom("Cycling", 4);
+        GymRoom room5 = new GymRoom("Taniec", 5);
+        GymRoom room6 = new GymRoom("Stretching", 6);
+        GymRoom room7 = new GymRoom("Boks", 7);
+        GymRoom room8 = new GymRoom("Joga", 8);
+
         ManagementSystem managementSystem = new ManagementSystem();
+
+        DataBase db = managementSystem.getDb();
+
+        db.addRoom(room1);
+        db.addRoom(room2);
+        db.addRoom(room3);
+        db.addRoom(room4);
+        db.addRoom(room5);
+        db.addRoom(room6);
+        db.addRoom(room7);
+        db.addRoom(room8);
+
+        db.serializeRooms(db.getGymRooms());
 
 
         GraphicalUserInterface GUI = new GraphicalUserInterface(managementSystem);

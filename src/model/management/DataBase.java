@@ -1,6 +1,7 @@
 package model.management;
 
 import model.gym.Activity;
+import model.gym.GymRoom;
 import model.user.ClubMember;
 import model.user.User;
 
@@ -16,10 +17,13 @@ public class DataBase implements Serializable {
     private List<User> users = new ArrayList<>();
     private static Map<Integer, Boolean> gymPassStatus = new HashMap<>();
     private List<Activity> activities = new ArrayList<>();
+    private List<GymRoom> gymRooms = new ArrayList<>();
     public static final String MAIN_FOLDER = "src/files/";
     public static final String USERS_FILE = MAIN_FOLDER + "users.ser";
     public static final String USER_GYM_PASS_STATUS = MAIN_FOLDER + "is_paid.ser";
     public static final String ACTIVITIES_FILE = MAIN_FOLDER + "activities.ser";
+    public static final String ROOMS_FILE = MAIN_FOLDER + "gym_rooms.ser";
+
 
 
     public void addUser(User user) {
@@ -132,7 +136,9 @@ public class DataBase implements Serializable {
 
     public void addActivity(Activity activity) {
         this.activities.add(activity);
+        serializeActivities(this.activities);  // serializacja po dodaniu nowej aktywności
     }
+
 
     public void serializeActivities(List<Activity> activities) {
         try {
@@ -162,6 +168,53 @@ public class DataBase implements Serializable {
         return activities;
     }
 
+    public List<GymRoom> getGymRooms() {
+        return this.gymRooms;
+    }
+    public void addRoom(GymRoom room) {
+        this.gymRooms.add(room);
+    }
+
+    public void serializeRooms(List<GymRoom> rooms) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(ROOMS_FILE);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(rooms);
+            out.close();
+            fileOut.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public static List<GymRoom> deserializeRooms() {
+        List<GymRoom> rooms;
+        try {
+            FileInputStream fileIn = new FileInputStream(ROOMS_FILE);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            rooms = (List<GymRoom>) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+        // Pobierz listę aktywności z bazy danych
+        List<Activity> activities = DataBase.deserializeActivities();
+
+        for (GymRoom room : rooms) {
+            List<Activity> roomActivities = new ArrayList<>();
+            for (Activity activity : activities) {
+                if (activity.getRoom().equals(room)) {
+                    roomActivities.add(activity);
+                }
+            }
+            room.setActivities(roomActivities);
+        }
+
+        return rooms;
+    }
 
 
 }

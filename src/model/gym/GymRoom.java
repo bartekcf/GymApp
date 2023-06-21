@@ -38,4 +38,13 @@ public class GymRoom implements Serializable {
     public void removeActivity(Activity activity) {
         this.activities.remove(activity);
     }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    @Override
+    public String toString() {
+        return "Pokój nr " + number + ": " + name;
+    }
 }
