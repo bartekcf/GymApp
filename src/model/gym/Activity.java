@@ -88,6 +88,14 @@ public class Activity implements Serializable {
         return LocalDateTime.now().isBefore(startTime);
     }
 
+    public void removeAllMembers() {
+        this.clubMembers.clear();
+    }
+
+    public void removeWorker() {
+        this.worker = null;
+    }
+
     @Override
     public String toString() {
         return name + " " + "Godzina rozpoczęcia: " + startTime + " Prowadzący: " + worker + " Pokój: " + room ;

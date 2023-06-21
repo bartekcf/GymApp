@@ -216,5 +216,8 @@ public class DataBase implements Serializable {
         return rooms;
     }
 
-
+    public void removeActivity(int activityId) {
+        activities.removeIf(a -> a.getId() == activityId);
+        serializeActivities(activities);
+    }
 }
