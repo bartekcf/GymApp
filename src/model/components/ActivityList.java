@@ -85,12 +85,18 @@ public class ActivityList extends JFrame {
             }
         });
 
+        JButton goBackButton = new JButton("Zamknij");
+        goBackButton.addActionListener(e -> {
+            setVisible(false); // @todo tak to raczej nie XD
+        });
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add((addActivityButton));
         buttonPanel.add(addMemberButton);
         buttonPanel.add(removeMemberButton);
         buttonPanel.add(addWorkerButton);
         buttonPanel.add(removeActivityButton);
+        buttonPanel.add(goBackButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
 

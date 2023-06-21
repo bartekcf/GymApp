@@ -217,6 +217,7 @@ public class DataBase implements Serializable {
     }
 
     public void removeActivity(int activityId) {
+        activities = DataBase.deserializeActivities();
         activities.removeIf(a -> a.getId() == activityId);
         serializeActivities(activities);
     }
