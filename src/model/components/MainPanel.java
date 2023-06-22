@@ -8,13 +8,8 @@ import model.management.ManagementSystem;
 import model.user.ClubMember;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Random;
 
 import static model.management.GraphicalUserInterface.FRAME_HEIGHT;
@@ -26,18 +21,20 @@ public class MainPanel {
     private ManagementSystem managementSystem;
     private DataBase db;
     private ClubMember clubMember;
+    private Calendar calendar;
 
     public MainPanel(DataBase db, ClubMember clubMember) {
         this.db = db;
         this.db.updateUserMembershipStatus();
         this.clubMember = clubMember;
+        this.calendar = new Calendar(db, clubMember, FRAME_WIDTH, FRAME_HEIGHT, getFrame());
     }
 
     public void createAndShowGUI() {
         frame = new JFrame("Panel Główny");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        frame.setLayout(new GridBagLayout());
+        frame.setLayout(new BorderLayout());
 
         BackgroundImage CMPanel = new BackgroundImage(IMG);
         CMPanel.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
@@ -47,14 +44,53 @@ public class MainPanel {
 
         JButton showCurrentActivitiesButton = new JButton("Pokaż dostępne zajęcia");
         showCurrentActivitiesButton.addActionListener(e -> {
-                UserAllActivity userAllActivity = new UserAllActivity(db, clubMember);
-                userAllActivity.createAndShowGUI();
+            UserAllActivity userAllActivity = new UserAllActivity(db, clubMember);
+            userAllActivity.createAndShowGUI();
         });
 
         JButton showActivitiesButton = new JButton("Pokaż moje zajęcia");
         showActivitiesButton.addActionListener(e -> {
-            ClubMemberActivityList clubMemberActivityList = new ClubMemberActivityList(db,clubMember);
+            ClubMemberActivityList clubMemberActivityList = new ClubMemberActivityList(db, clubMember);
             clubMemberActivityList.createAndShowGUI();
+        });
+
+        JButton showCalendarButton = new JButton("Kalendarz zajęć");
+        showCalendarButton.addActionListener(e -> {
+            JDialog calendarDialog = new JDialog();
+            calendarDialog.setLayout(new BorderLayout());
+
+            final JPanel[] monthPanel = {calendar.createMonthPanel()};
+
+            JButton nextMonthButton = new JButton("Następny miesiąc");
+            nextMonthButton.addActionListener(ev -> {
+                calendar.nextMonth();
+                JPanel newMonthPanel = calendar.createMonthPanel();
+                calendarDialog.remove(monthPanel[0]);
+                calendarDialog.add(newMonthPanel, BorderLayout.CENTER);
+                monthPanel[0] = newMonthPanel;
+                calendarDialog.revalidate();
+                calendarDialog.repaint();
+            });
+
+            JButton previousMonthButton = new JButton("Poprzedni miesiąc");
+            previousMonthButton.addActionListener(ev -> {
+                calendar.previousMonth();
+                JPanel newMonthPanel = calendar.createMonthPanel();
+                calendarDialog.remove(monthPanel[0]);
+                calendarDialog.add(newMonthPanel, BorderLayout.CENTER);
+                monthPanel[0] = newMonthPanel;
+                calendarDialog.revalidate();
+                calendarDialog.repaint();
+            });
+
+            JPanel monthNavigationPanel = new JPanel(new BorderLayout());
+            monthNavigationPanel.add(previousMonthButton, BorderLayout.WEST);
+            monthNavigationPanel.add(nextMonthButton, BorderLayout.EAST);
+            calendarDialog.add(monthNavigationPanel, BorderLayout.NORTH);
+            calendarDialog.add(monthPanel[0], BorderLayout.CENTER);
+
+            calendarDialog.pack();
+            calendarDialog.setVisible(true);
         });
 
         JButton checkGymPass = new JButton("Sprawdź stan karnetu");
@@ -127,9 +163,8 @@ public class MainPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         contentPanel.add(welcomeLabel, gbc);
 
-
         gbc.gridy = 1;
-        contentPanel.add(showCurrentActivitiesButton,gbc);
+        contentPanel.add(showCurrentActivitiesButton, gbc);
 
         gbc.gridy = 2;
         contentPanel.add(showActivitiesButton, gbc);
@@ -137,10 +172,17 @@ public class MainPanel {
         gbc.gridy = 3;
         contentPanel.add(checkGymPass, gbc);
 
+        gbc.gridy = 4;
+        contentPanel.add(showCalendarButton, gbc);
+
         frame.setContentPane(CMPanel);
         frame.getContentPane().add(contentPanel);
 
         // Wyświetl ramkę
         frame.setVisible(true);
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 }
