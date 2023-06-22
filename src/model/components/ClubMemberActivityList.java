@@ -42,7 +42,7 @@ public class ClubMemberActivityList extends JFrame {
 
     public void createAndShowGUI() {
 
-        //wychodzi po alercie bez sensu dalej wchodzic
+        // Wychodzi po alercie bez sensu dalej wchodzić
         if (selectedActivities.isEmpty()) {
             return;
         }
@@ -77,17 +77,17 @@ public class ClubMemberActivityList extends JFrame {
                 if (selectedActivity != null) {
                     clubMember.signOutFromActivity(selectedActivity);
                     model.removeRow(selectedRow);
+                    db.serializeActivities(activities);
                 }
             }
         });
 
         JButton goBackButton = new JButton("Powrót");
-        goBackButton.addActionListener(e -> {
-            setVisible(false);
-        });
+        goBackButton.addActionListener(e -> setVisible(false));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(goBackButton);
+        buttonPanel.add(unsubscribeButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
