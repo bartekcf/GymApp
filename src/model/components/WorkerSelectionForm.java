@@ -38,7 +38,8 @@ public class WorkerSelectionForm extends JDialog {
             for (User user : db.getUsers()) {
                 if (user instanceof Worker && ((Worker) user).getWorkerLogin().equals(selectedWorkerLogin)) {
                     selectedWorker = (Worker) user;
-                    activity.setWorker(selectedWorker);
+                    db.addWorker(selectedWorker, activity);
+//                    activity.setWorker(selectedWorker);
                     selectedWorker.addActivity(activity);
                     setVisible(false);
                     break;

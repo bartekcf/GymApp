@@ -73,18 +73,12 @@ public class ActivityList extends JFrame {
             if (row != -1) {
                 int id = (int) model.getValueAt(row, 0);
                 activities.stream().filter(a -> a.getId() == id).findFirst().ifPresent(selectedActivity -> {
-                    WorkerSelectionForm workerSelectionForm = new WorkerSelectionForm(db, selectedActivity);
-                    workerSelectionForm.createAndShowGUI();
-                    workerSelectionForm.setVisible(true);
-
-                    // Get the selected worker from WorkerSelectionForm
-                    Worker selectedWorker = workerSelectionForm.getSelectedWorker();
-                    if (selectedWorker != null) {
-                        db.addWorker(selectedWorker, selectedActivity); // Add the worker to the activity in the database
-                        model.setValueAt(selectedWorker, row, 4); // Update the worker value in the table
-                    }else {
-                        // Optional: Provide feedback to the user that no worker was selected
-                        JOptionPane.showMessageDialog(null, "Nie wybrano pracownika.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                    if (selectedActivity.getWorker() != null) {
+                        JOptionPane.showMessageDialog(null, "Aktywność ma już przypisanego pracownika.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        WorkerSelectionForm workerSelectionForm = new WorkerSelectionForm(db, selectedActivity);
+                        workerSelectionForm.createAndShowGUI();
+                        workerSelectionForm.setVisible(true);
                     }
                 });
             }

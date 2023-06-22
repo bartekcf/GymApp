@@ -26,7 +26,6 @@ public class DataBase implements Serializable {
     public static final String ROOMS_FILE = MAIN_FOLDER + "gym_rooms.ser";
 
 
-
     public void addUser(User user) {
         this.users.add(user);
         serialize();
@@ -115,8 +114,6 @@ public class DataBase implements Serializable {
     }
 
 
-
-
     public Map<Integer, Boolean> getMembershipStatus() {
         return gymPassStatus;
     }
@@ -172,6 +169,7 @@ public class DataBase implements Serializable {
     public List<GymRoom> getGymRooms() {
         return this.gymRooms;
     }
+
     public void addRoom(GymRoom room) {
         this.gymRooms.add(room);
     }
@@ -217,6 +215,11 @@ public class DataBase implements Serializable {
         return rooms;
     }
 
+    public List<Activity> getActivities() {
+        return this.activities;
+    }
+
+
     public void removeActivity(int activityId) {
         activities = DataBase.deserializeActivities();
         activities.removeIf(a -> a.getId() == activityId);
@@ -241,9 +244,9 @@ public class DataBase implements Serializable {
 //        serializeActivities(activities);
 //    }
 
-public void removeWorker(Worker worker, Activity activity) {
-    activity.removeWorker(worker);
-    serializeActivities(activities);
-}
+    public void removeWorker(Worker worker, Activity activity) {
+        activity.removeWorker(worker);
+        serializeActivities(activities);
+    }
 
 }
