@@ -69,8 +69,41 @@ public class ActivityList extends JFrame {
 
         JButton addWorkerButton = new JButton("Dodaj pracownika");
         addWorkerButton.addActionListener(e -> {
-            // Kod dodający pracownika do aktywności
-            // Pamiętaj o odświeżeniu modelu tabeli po każdej modyfikacji!
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                activities.stream().filter(a -> a.getId() == id).findFirst().ifPresent(selectedActivity -> {
+                    WorkerSelectionForm workerSelectionForm = new WorkerSelectionForm(db, selectedActivity);
+                    workerSelectionForm.createAndShowGUI();
+                    workerSelectionForm.setVisible(true);
+
+                    // Get the selected worker from WorkerSelectionForm
+                    Worker selectedWorker = workerSelectionForm.getSelectedWorker();
+                    if (selectedWorker != null) {
+                        db.addWorker(selectedWorker, selectedActivity); // Add the worker to the activity in the database
+                        model.setValueAt(selectedWorker, row, 4); // Update the worker value in the table
+                    }else {
+                        // Optional: Provide feedback to the user that no worker was selected
+                        JOptionPane.showMessageDialog(null, "Nie wybrano pracownika.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+            }
+        });
+
+        JButton removeWorkerButton = new JButton("Usuń pracownika");
+        removeWorkerButton.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                Activity selectedActivity = activities.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
+                if (selectedActivity != null && selectedActivity.getWorker() != null) {
+                    db.removeWorker(selectedActivity.getWorker(), selectedActivity);
+                    selectedActivity.removeWorker(selectedActivity.getWorker()); // Usunięcie pracownika z aktywności
+                    db.serializeActivities(activities);
+                    model.setValueAt("", row, 4);
+                    model.fireTableDataChanged(); // Odświeżenie danych w tabeli
+                }
+            }
         });
 
         JButton removeActivityButton = new JButton("Usuń aktywność");
@@ -95,6 +128,7 @@ public class ActivityList extends JFrame {
         buttonPanel.add(addMemberButton);
         buttonPanel.add(removeMemberButton);
         buttonPanel.add(addWorkerButton);
+        buttonPanel.add(removeWorkerButton);
         buttonPanel.add(removeActivityButton);
         buttonPanel.add(goBackButton);
 

@@ -4,6 +4,7 @@ import model.gym.Activity;
 import model.gym.GymRoom;
 import model.user.ClubMember;
 import model.user.User;
+import model.user.Worker;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -221,4 +222,28 @@ public class DataBase implements Serializable {
         activities.removeIf(a -> a.getId() == activityId);
         serializeActivities(activities);
     }
+
+    public void addWorker(Worker worker, Activity activity) {
+        activity.addWorker(worker);
+        activities = DataBase.deserializeActivities();
+        activities.stream()
+                .filter(a -> a.getId() == activity.getId())
+                .forEach(a -> a.setWorker(activity.getWorker()));
+        serializeActivities(activities);
+    }
+
+//    public void removeWorker(Worker worker, Activity activity) {
+//        activity.removeWorker();
+//        activities = DataBase.deserializeActivities();
+//        activities.stream()
+//                .filter(a -> a.getId() == activity.getId())
+//                .forEach(a -> a.setWorker(activity.getWorker()));
+//        serializeActivities(activities);
+//    }
+
+public void removeWorker(Worker worker, Activity activity) {
+    activity.removeWorker(worker);
+    serializeActivities(activities);
+}
+
 }

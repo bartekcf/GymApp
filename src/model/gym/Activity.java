@@ -7,6 +7,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Activity implements Serializable {
     private static int nextId = 1;
@@ -92,9 +93,30 @@ public class Activity implements Serializable {
         this.clubMembers.clear();
     }
 
-    public void removeWorker() {
-        this.worker = null;
+    public void addWorker(Worker worker) {
+        this.worker = worker;
     }
+
+    public void removeWorker(Worker worker) {
+        if (this.worker != null && this.worker.equals(worker)) {
+            this.worker = null;
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Activity activity = (Activity) obj;
+        return id == activity.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 
     @Override
     public String toString() {
