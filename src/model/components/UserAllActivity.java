@@ -70,8 +70,12 @@ public class UserAllActivity extends JFrame {
             }
         });
 
+        JButton goBackButton = new JButton("Powrót");
+        goBackButton.addActionListener(e -> setVisible(false));
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
+        buttonPanel.add(goBackButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);

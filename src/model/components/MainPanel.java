@@ -57,11 +57,6 @@ public class MainPanel {
             clubMemberActivityList.createAndShowGUI();
         });
 
-        JButton updateProfileButton = new JButton("Aktualizuj mój profil");
-        updateProfileButton.addActionListener(e -> {
-            // Implementuj logikę aktualizacji profilu
-        });
-
         JButton checkGymPass = new JButton("Sprawdź stan karnetu");
         checkGymPass.addActionListener(e -> {
             JDialog gymPassDialog = new JDialog(frame, "Stan Karnetu", true);
@@ -106,12 +101,19 @@ public class MainPanel {
         JMenuBar menuBar = new JMenuBar();
         JMenu optionsMenu = new JMenu("Menu");
 
+        JMenuItem updateProfileMenuItem = new JMenuItem("Edytuj profil");
+        updateProfileMenuItem.addActionListener(e -> {
+            // Implementuj logikę aktualizacji profilu
+        });
+
         JMenuItem logoutMenuItem = new JMenuItem("Wyloguj");
         logoutMenuItem.addActionListener(e -> {
             GraphicalUserInterface gui = new GraphicalUserInterface(managementSystem);
             gui.createAndShowGUI();
             frame.dispose();
         });
+
+        optionsMenu.add(updateProfileMenuItem);
         optionsMenu.add(logoutMenuItem);
         menuBar.add(optionsMenu);
         frame.setJMenuBar(menuBar);
@@ -133,9 +135,6 @@ public class MainPanel {
         contentPanel.add(showActivitiesButton, gbc);
 
         gbc.gridy = 3;
-        contentPanel.add(updateProfileButton, gbc);
-
-        gbc.gridy = 4;
         contentPanel.add(checkGymPass, gbc);
 
         frame.setContentPane(CMPanel);
