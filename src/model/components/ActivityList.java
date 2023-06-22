@@ -2,6 +2,7 @@ package model.components;
 
 import model.gym.Activity;
 import model.management.DataBase;
+import model.user.ClubMember;
 import model.user.Worker;
 
 import javax.swing.*;
@@ -36,7 +37,7 @@ public class ActivityList extends JFrame {
             Object[] o = new Object[6];
             o[0] = a.getId();
             o[1] = a.getName();
-            o[2] = a.getDateTime();
+            o[2] = a.getStartTime();
             o[3] = a.getEndTime();
             o[4] = a.getWorker();
             o[5] = (a.getRoom() != null) ? a.getRoom() : ""; // Check for null room
@@ -54,17 +55,38 @@ public class ActivityList extends JFrame {
             activityForm.createAndShowGUI();
         });
 
-
         JButton addMemberButton = new JButton("Dodaj członka");
         addMemberButton.addActionListener(e -> {
-            // Kod dodający członka do aktywności
-            // Pamiętaj o odświeżeniu modelu tabeli po każdej modyfikacji!
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                Activity selectedActivity = activities.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
+                if (selectedActivity != null) {
+                    ClubMember member = selectClubMember(); // Wybór członka klubu
+                    if (member != null) {
+                        selectedActivity.addToActivity(member);
+                        db.serializeActivities(activities);
+                        model.fireTableDataChanged(); // Odświeżenie danych w tabeli
+                    }
+                }
+            }
         });
 
         JButton removeMemberButton = new JButton("Usuń członka");
         removeMemberButton.addActionListener(e -> {
-            // Kod usuwający członka z aktywności
-            // Pamiętaj o odświeżeniu modelu tabeli po każdej modyfikacji!
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                Activity selectedActivity = activities.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
+                if (selectedActivity != null) {
+                    ClubMember member = selectClubMember(); // Wybór członka klubu
+                    if (member != null) {
+                        selectedActivity.removeFromActivity(member);
+                        db.serializeActivities(activities);
+                        model.fireTableDataChanged(); // Odświeżenie danych w tabeli
+                    }
+                }
+            }
         });
 
         JButton addWorkerButton = new JButton("Dodaj pracownika");
@@ -114,11 +136,11 @@ public class ActivityList extends JFrame {
 
         JButton goBackButton = new JButton("Zamknij");
         goBackButton.addActionListener(e -> {
-            setVisible(false); // @todo tak to raczej nie XD
+            setVisible(false);
         });
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add((addActivityButton));
+        buttonPanel.add(addActivityButton);
         buttonPanel.add(addMemberButton);
         buttonPanel.add(removeMemberButton);
         buttonPanel.add(addWorkerButton);
@@ -133,5 +155,12 @@ public class ActivityList extends JFrame {
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+    }
+
+    private ClubMember selectClubMember() {
+        ClubMemberSelectionForm clubMemberSelectionForm = new ClubMemberSelectionForm(db);
+        clubMemberSelectionForm.setClubMembers(db.getClubMembers());
+        clubMemberSelectionForm.setVisible(true);
+        return clubMemberSelectionForm.getSelectedClubMember();
     }
 }

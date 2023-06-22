@@ -235,18 +235,18 @@ public class DataBase implements Serializable {
         serializeActivities(activities);
     }
 
-//    public void removeWorker(Worker worker, Activity activity) {
-//        activity.removeWorker();
-//        activities = DataBase.deserializeActivities();
-//        activities.stream()
-//                .filter(a -> a.getId() == activity.getId())
-//                .forEach(a -> a.setWorker(activity.getWorker()));
-//        serializeActivities(activities);
-//    }
-
     public void removeWorker(Worker worker, Activity activity) {
         activity.removeWorker(worker);
         serializeActivities(activities);
     }
 
+    public List<ClubMember> getClubMembers() {
+        List<ClubMember> clubMembers = new ArrayList<>();
+        for (User user : this.users) {
+            if (user instanceof ClubMember) {
+                clubMembers.add((ClubMember) user);
+            }
+        }
+        return clubMembers;
+    }
 }

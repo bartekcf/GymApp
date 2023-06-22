@@ -3,7 +3,7 @@ package model.gym;
 import model.user.ClubMember;
 import model.user.Worker;
 
-import java.io.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +19,14 @@ public class Activity implements Serializable {
     private GymRoom room;
     private List<ClubMember> clubMembers;
 
-    public Activity(String name, LocalDateTime startTime, LocalDateTime endTime, Worker worker, GymRoom room) {  // Dodaj argument do konstruktora
+    public Activity(String name, LocalDateTime startTime, LocalDateTime endTime, Worker worker, GymRoom room) {
         this.id = nextId++;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.worker = worker;
+        this.room = room;
         this.clubMembers = new ArrayList<>();
-        this.room = room;  // Przypisz wartość do nowego pola
     }
 
     public int getId() {
@@ -41,12 +41,12 @@ public class Activity implements Serializable {
         this.name = name;
     }
 
-    public LocalDateTime getDateTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.startTime = dateTime;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     public LocalDateTime getEndTime() {
@@ -65,16 +65,16 @@ public class Activity implements Serializable {
         this.worker = worker;
     }
 
-    public List<ClubMember> getMembers() {
-        return clubMembers;
-    }
-
-    public GymRoom getRoom() {  // Metoda getter dla pokoju
+    public GymRoom getRoom() {
         return room;
     }
 
-    public void setRoom(GymRoom room) {  // Metoda setter dla pokoju
+    public void setRoom(GymRoom room) {
         this.room = room;
+    }
+
+    public List<ClubMember> getClubMembers() {
+        return clubMembers;
     }
 
     public void addToActivity(ClubMember clubMember) {
@@ -103,7 +103,6 @@ public class Activity implements Serializable {
         }
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -117,9 +116,8 @@ public class Activity implements Serializable {
         return Objects.hash(id);
     }
 
-
     @Override
     public String toString() {
-        return name + " " + "Godzina rozpoczęcia: " + startTime + " Prowadzący: " + worker + " Pokój: " + room ;
+        return name + " Godzina rozpoczęcia: " + startTime + " Prowadzący: " + worker + " Pokój: " + room;
     }
 }
