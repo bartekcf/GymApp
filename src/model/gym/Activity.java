@@ -107,6 +107,11 @@ public class Activity implements Serializable {
         }
     }
 
+    public void removeClubMember(ClubMember clubMember) {
+        this.clubMembers.remove(clubMember);
+    }
+
+
     public static int getNextId() {
         return nextId;
     }

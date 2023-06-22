@@ -227,6 +227,10 @@ public class DataBase implements Serializable {
         activity.removeWorker(worker);
         serializeActivities(activities);
     }
+    public void removeClubMember(ClubMember clubMember, Activity activity) {
+        activity.removeClubMember(clubMember);
+        serializeActivities(activities);
+    }
 
     public List<ClubMember> getClubMembers() {
         List<ClubMember> clubMembers = new ArrayList<>();

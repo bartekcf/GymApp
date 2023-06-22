@@ -67,17 +67,25 @@ public class ClubMemberActivityList extends JFrame {
 
         JButton unsubscribeButton = new JButton("Wypisz się");
         unsubscribeButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow != -1) {
-                int activityId = (int) model.getValueAt(selectedRow, 0);
-                Activity selectedActivity = selectedActivities.stream()
-                        .filter(activity -> activity.getId() == activityId)
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                Activity selectedActivity = activities.stream()
+                        .filter(a -> a.getId() == id)
                         .findFirst()
                         .orElse(null);
                 if (selectedActivity != null) {
-                    clubMember.signOutFromActivity(selectedActivity);
-                    model.removeRow(selectedRow);
-                    db.serializeActivities(activities);
+                    ClubMember memberToRemove = selectedActivity.getClubMembers()
+                            .stream()
+                            .filter(cm -> cm.getId() == clubMember.getId())
+                            .findFirst()
+                            .orElse(null);
+                    if (memberToRemove != null) {
+                        db.removeClubMember(memberToRemove, selectedActivity);
+                        selectedActivity.removeClubMember(memberToRemove);
+                        db.serializeActivities(activities);
+                        model.removeRow(row);
+                    }
                 }
             }
         });
