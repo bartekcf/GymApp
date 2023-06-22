@@ -33,6 +33,10 @@ public class Activity implements Serializable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -101,6 +105,14 @@ public class Activity implements Serializable {
         if (this.worker != null && this.worker.equals(worker)) {
             this.worker = null;
         }
+    }
+
+    public static int getNextId() {
+        return nextId;
+    }
+
+    public static void incrementNextId() {
+        nextId++;
     }
 
     @Override

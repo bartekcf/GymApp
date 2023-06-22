@@ -40,7 +40,7 @@ public class WorkerSelectionForm extends JDialog {
                     selectedWorker = (Worker) user;
                     db.addWorker(selectedWorker, activity);
 //                    activity.setWorker(selectedWorker);
-                    selectedWorker.addActivity(activity);
+                    selectedWorker.addActivity(activity, db);
                     setVisible(false);
                     break;
                 }

@@ -1,6 +1,7 @@
 package model.user;
 
 import model.gym.Activity;
+import model.management.DataBase;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,8 +30,15 @@ public class Worker extends User implements Serializable {
         return activities;
     }
 
-    public void addActivity(Activity activity) {
+//    public void addActivity(Activity activity) {
+//        this.activities.add(activity);
+//    }
+
+    public void addActivity(Activity activity, DataBase db) {
+        activity.setId(Activity.getNextId()); // Przypisanie unikalnego ID dla aktywności
+        Activity.incrementNextId(); // Zwiększenie wartości nextId
         this.activities.add(activity);
+        db.serializeActivities(this.activities);  // serializacja po dodaniu nowej aktywności
     }
 
     public void removeActivity(Activity activity) {

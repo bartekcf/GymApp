@@ -25,7 +25,6 @@ public class DataBase implements Serializable {
     public static final String ACTIVITIES_FILE = MAIN_FOLDER + "activities.ser";
     public static final String ROOMS_FILE = MAIN_FOLDER + "gym_rooms.ser";
 
-
     public void addUser(User user) {
         this.users.add(user);
         serialize();
@@ -73,7 +72,6 @@ public class DataBase implements Serializable {
         return db;
     }
 
-
     public List<User> getUsers() {
         return this.users;
     }
@@ -82,7 +80,6 @@ public class DataBase implements Serializable {
         gymPassStatus.put(clubMember.getId(), clubMember.isPaid());
         serializeUserStatus();
     }
-
 
     public void serializeUserStatus() {
         try {
@@ -113,7 +110,6 @@ public class DataBase implements Serializable {
         return new DataBase();
     }
 
-
     public Map<Integer, Boolean> getMembershipStatus() {
         return gymPassStatus;
     }
@@ -132,12 +128,6 @@ public class DataBase implements Serializable {
         }
     }
 
-    public void addActivity(Activity activity) {
-        this.activities.add(activity);
-        serializeActivities(this.activities);  // serializacja po dodaniu nowej aktywności
-    }
-
-
     public void serializeActivities(List<Activity> activities) {
         try {
             FileOutputStream fileOut = new FileOutputStream(ACTIVITIES_FILE);
@@ -149,7 +139,6 @@ public class DataBase implements Serializable {
             i.printStackTrace();
         }
     }
-
 
     public static List<Activity> deserializeActivities() {
         List<Activity> activities;
@@ -218,7 +207,6 @@ public class DataBase implements Serializable {
     public List<Activity> getActivities() {
         return this.activities;
     }
-
 
     public void removeActivity(int activityId) {
         activities = DataBase.deserializeActivities();
