@@ -47,8 +47,8 @@ public class WorkerMainPanel {
 
         JButton showActivitiesButton = new JButton("Pokaż moje zajęcia");
         showActivitiesButton.addActionListener(e -> {
-            List<Activity> activities = worker.getActivities();
-            // Implementuj logikę wyświetlania listy zajęć
+            WorkerActivityList workerActivityList = new WorkerActivityList(db,worker);
+            workerActivityList.createAndShowGUI();
         });
 
         JButton activityListButton = new JButton("Lista aktywności");

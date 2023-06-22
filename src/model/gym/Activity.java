@@ -104,19 +104,6 @@ public class Activity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Activity activity = (Activity) obj;
-        return id == activity.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
     public String toString() {
         return name + " Godzina rozpoczęcia: " + startTime + " Prowadzący: " + worker + " Pokój: " + room;
     }

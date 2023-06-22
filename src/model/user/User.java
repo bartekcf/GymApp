@@ -59,6 +59,10 @@ public abstract class User implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
     public String getLogin() {
         return login;
     }

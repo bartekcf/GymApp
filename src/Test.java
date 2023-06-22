@@ -33,8 +33,11 @@
 //        }
 //    }
 //}
+import model.gym.Activity;
 import model.management.DataBase;
 import model.user.ClubMember;
+import model.user.User;
+import model.user.Worker;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Test implements Serializable {
+    private List<Activity> activities;
 
     public static void main(String[] args) {
         try {
@@ -63,6 +67,22 @@ public class Test implements Serializable {
                 System.out.println("Opłacony karnet: " + isPaid);
                 System.out.println("----------");
             }
+
+            List<User> users = db.getUsers();
+
+            System.out.println("Lista pracowników:");
+            for (User user : users) {
+                if (user instanceof Worker) {
+                    System.out.println(user.getId());
+                }
+            }
+
+            List<Activity> activities = DataBase.deserializeActivities();
+            System.out.println("Lista aktywności:");
+            for (Activity activity : activities) {
+                System.out.println(activity.getWorker().getId());
+            }
+
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
