@@ -165,6 +165,21 @@ public class ActivityList extends JFrame {
     private void removeClubMember(ClubMember clubMember, Activity selectedActivity) {
         selectedActivity.removeFromActivity(clubMember);
         db.serializeActivities(activities);
+        int row = getSelectedActivityRow(selectedActivity.getId());
+        if (row != -1) {
+            model.setValueAt("", row, 5);
+            model.fireTableDataChanged(); // Odświeżenie danych w tabeli
+        }
+    }
+
+    private int getSelectedActivityRow(int activityId) {
+        for (int row = 0; row < model.getRowCount(); row++) {
+            int id = (int) model.getValueAt(row, 0);
+            if (id == activityId) {
+                return row;
+            }
+        }
+        return -1;
     }
 
     }

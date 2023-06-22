@@ -57,6 +57,16 @@ public class ActivityForm {
             LocalDateTime startTime = LocalDateTime.parse(startTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             LocalDateTime endTime = LocalDateTime.parse(endTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
+            if (startTime.isBefore(LocalDateTime.now())) {
+                JOptionPane.showMessageDialog(addActivityFrame, "Data rozpoczęcia nie może być wcześniejsza niż obecny czas.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (endTime.isBefore(startTime)) {
+                JOptionPane.showMessageDialog(addActivityFrame, "Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             GymRoom selectedRoom = (GymRoom) roomComboBox.getSelectedItem();
 
             Activity activity = new Activity(name, startTime, endTime, worker, selectedRoom);
@@ -72,7 +82,7 @@ public class ActivityForm {
             rooms.add(selectedRoom);
             db.serializeRooms(rooms);
 
-            JOptionPane.showMessageDialog(addActivityFrame, "Zajęcia zostały dodane!.");
+            JOptionPane.showMessageDialog(addActivityFrame, "Zajęcia zostały dodane!");
             addActivityFrame.dispose();
         });
         addActivityFrame.add(addButton);
