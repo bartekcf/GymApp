@@ -43,8 +43,11 @@ public class ClubMember extends User implements Serializable {
     }
 
 
-    public void unsubscribeFromActivity(Activity activity) {
-        this.activities.remove(activity);
+    public void signOutFromActivity(Activity activity) {
+        if (activities.contains(activity)) {
+            activities.remove(activity);
+            activity.removeFromActivity(this);
+        }
     }
 
     public String getClubMemberLogin()

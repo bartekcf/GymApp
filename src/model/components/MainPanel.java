@@ -52,8 +52,8 @@ public class MainPanel {
 
         JButton showActivitiesButton = new JButton("Pokaż moje zajęcia");
         showActivitiesButton.addActionListener(e -> {
-            List<Activity> activities = clubMember.getActivities();
-            // Implementuj logikę wyświetlania listy zajęć
+            ClubMemberActivityList clubMemberActivityList = new ClubMemberActivityList(db,clubMember);
+            clubMemberActivityList.createAndShowGUI();
         });
 
         JButton updateProfileButton = new JButton("Aktualizuj mój profil");
