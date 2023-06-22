@@ -1,6 +1,7 @@
 package model.user;
 
 import model.gym.Activity;
+import model.management.DataBase;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -16,7 +17,6 @@ public class ClubMember extends User implements Serializable {
         super(firstName, lastName, login, password, birthDay,userRole);
         this.activities = new ArrayList<>();
     }
-
 
     public String getAccountStatus() {
         return accountStatus;

@@ -50,19 +50,28 @@ public class AddClubMemberForm extends JDialog {
             int selectedRowIndex = table.getSelectedRow();
             if (selectedRowIndex != -1) {
                 int memberId = (int) table.getValueAt(selectedRowIndex, 0);
+                db.updateUserMembershipStatus();
                 ClubMember selectedClubMember = clubMembers.stream()
                         .filter(member -> member.getId() == memberId)
                         .findFirst()
                         .orElse(null);
 
                 if (selectedClubMember != null) {
-                    selectedActivity.addToActivity(selectedClubMember);
-                    db.serializeActivities(activities);
-                    JOptionPane.showMessageDialog(this, "Członek klubu został dodany."); // Reakcja po dodaniu członka klubu
+                    boolean isMemberAssigned = selectedActivity.getClubMembers().contains(selectedClubMember);
+                    if (isMemberAssigned) {
+                        JOptionPane.showMessageDialog(this, "Ten użytkownik jest już przypisany do tych zajęć.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                    } else if (!selectedClubMember.isPaid()) {
+                        JOptionPane.showMessageDialog(this, "Ten użytkownik nie posiada opłaconego karnetu.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        selectedActivity.addToActivity(selectedClubMember);
+                        db.serializeActivities(activities);
+                        JOptionPane.showMessageDialog(this, "Członek klubu został dodany.");
+                    }
                 }
             }
             dispose();
         });
+
 
         buttonPanel.add(addButton);
         add(buttonPanel, BorderLayout.SOUTH);
