@@ -103,7 +103,8 @@ public class MainPanel {
 
         JMenuItem updateProfileMenuItem = new JMenuItem("Edytuj profil");
         updateProfileMenuItem.addActionListener(e -> {
-            // Implementuj logikę aktualizacji profilu
+            EditProfileDialog dialog = new EditProfileDialog(frame, "Edytuj profil", true, db, clubMember);
+            dialog.setVisible(true);
         });
 
         JMenuItem logoutMenuItem = new JMenuItem("Wyloguj");
