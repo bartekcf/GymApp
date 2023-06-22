@@ -8,6 +8,7 @@ import model.management.ManagementSystem;
 import model.user.ClubMember;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,8 +47,8 @@ public class MainPanel {
 
         JButton showCurrentActivitiesButton = new JButton("Pokaż dostępne zajęcia");
         showCurrentActivitiesButton.addActionListener(e -> {
-            List<Activity> activities = clubMember.getActivities();
-            // Implementuj logikę wyświetlania listy zajęć
+                UserAllActivity userAllActivity = new UserAllActivity(db, clubMember);
+                userAllActivity.createAndShowGUI();
         });
 
         JButton showActivitiesButton = new JButton("Pokaż moje zajęcia");
@@ -124,13 +125,17 @@ public class MainPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         contentPanel.add(welcomeLabel, gbc);
 
+
         gbc.gridy = 1;
-        contentPanel.add(showActivitiesButton, gbc);
+        contentPanel.add(showCurrentActivitiesButton,gbc);
 
         gbc.gridy = 2;
-        contentPanel.add(updateProfileButton, gbc);
+        contentPanel.add(showActivitiesButton, gbc);
 
         gbc.gridy = 3;
+        contentPanel.add(updateProfileButton, gbc);
+
+        gbc.gridy = 4;
         contentPanel.add(checkGymPass, gbc);
 
         frame.setContentPane(CMPanel);
