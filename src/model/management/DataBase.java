@@ -117,17 +117,22 @@ public class DataBase implements Serializable {
     public void updateUserMembershipStatus() {
         DataBase membershipStatusDb = DataBase.deserializeUserStatus();
 
-        // Aktualizacja statusów opłacenia dla użytkowników
         for (User user : this.users) {
-            if (user instanceof ClubMember) {
-                Boolean isPaid = membershipStatusDb.getMembershipStatus().get(user.getId());
-                if (isPaid != null) {
-                    ((ClubMember) user).setPaid(isPaid);
+            if (user instanceof ClubMember clubMember) {
+                if (clubMember.isPaid()) {
+                    Boolean isPaid = membershipStatusDb.getMembershipStatus().get(user.getId());
+                    if (isPaid != null && !isPaid) {
+                        clubMember.setPassExpirationDate(null);
+                    }
+                } else {
+                    Boolean isPaid = membershipStatusDb.getMembershipStatus().get(user.getId());
+                    if (isPaid != null && isPaid) {
+                        clubMember.payMembershipFee();
+                    }
                 }
             }
         }
     }
-
     public void serializeActivities(List<Activity> activities) {
         try {
             FileOutputStream fileOut = new FileOutputStream(ACTIVITIES_FILE);

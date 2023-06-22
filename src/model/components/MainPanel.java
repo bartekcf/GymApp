@@ -80,9 +80,8 @@ public class MainPanel {
 
                 JButton payButton = new JButton("Opłać");
                 payButton.addActionListener(event -> {
-                    clubMember.setPaid(true);
-                    db.updateUserStatus(clubMember);
-                    JOptionPane.showMessageDialog(gymPassDialog, "Karnet został opłacony.");
+                    clubMember.payMembershipFee();
+                    JOptionPane.showMessageDialog(gymPassDialog, "Karnet został opłacony na kolejny miesiąc.");
                     gymPassDialog.dispose();
                 });
                 gbc.gridy = 2;
