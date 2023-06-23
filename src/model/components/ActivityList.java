@@ -20,9 +20,12 @@ public class ActivityList extends JFrame {
 
     private Activity selectedActivity;
 
-    public ActivityList(DataBase db, Worker worker) {
+    private boolean isMenago;
+
+    public ActivityList(DataBase db, Worker worker, boolean isMenago) {
         this.db = db;
         this.worker = worker;
+        this.isMenago = isMenago;
 
         setTitle("Lista aktywności");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -94,73 +97,77 @@ public class ActivityList extends JFrame {
             }
         });
 
-            JButton addWorkerButton = new JButton("Dodaj pracownika");
-            addWorkerButton.addActionListener(e -> {
-                int row = table.getSelectedRow();
-                if (row != -1) {
-                    int id = (int) model.getValueAt(row, 0);
-                    activities.stream().filter(a -> a.getId() == id).findFirst().ifPresent(selectedActivity -> {
-                        if (selectedActivity.getWorker() != null) {
-                            JOptionPane.showMessageDialog(null, "Aktywność ma już przypisanego pracownika.", "Błąd", JOptionPane.ERROR_MESSAGE);
-                        } else {
-                            WorkerSelectionForm workerSelectionForm = new WorkerSelectionForm(db, selectedActivity);
-                            workerSelectionForm.createAndShowGUI();
-                            workerSelectionForm.setVisible(true);
-                        }
-                    });
-                }
-            });
-
-            JButton removeWorkerButton = new JButton("Usuń pracownika");
-            removeWorkerButton.addActionListener(e -> {
-                int row = table.getSelectedRow();
-                if (row != -1) {
-                    int id = (int) model.getValueAt(row, 0);
-                    Activity selectedActivity = activities.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
-                    if (selectedActivity != null && selectedActivity.getWorker() != null) {
-                        db.removeWorker(selectedActivity.getWorker(), selectedActivity);
-                        selectedActivity.removeWorker(selectedActivity.getWorker()); // Usunięcie pracownika z aktywności
-                        db.serializeActivities(activities);
-                        model.setValueAt("", row, 4);
-                        model.fireTableDataChanged(); // Odświeżenie danych w tabeli
+        JButton addWorkerButton = new JButton("Dodaj pracownika");
+        addWorkerButton.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                activities.stream().filter(a -> a.getId() == id).findFirst().ifPresent(selectedActivity -> {
+                    if (selectedActivity.getWorker() != null) {
+                        JOptionPane.showMessageDialog(null, "Aktywność ma już przypisanego pracownika.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        WorkerSelectionForm workerSelectionForm = new WorkerSelectionForm(db, selectedActivity);
+                        workerSelectionForm.createAndShowGUI();
+                        workerSelectionForm.setVisible(true);
                     }
+                });
+            }
+        });
+
+        JButton removeWorkerButton = new JButton("Usuń pracownika");
+        removeWorkerButton.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                Activity selectedActivity = activities.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
+                if (selectedActivity != null && selectedActivity.getWorker() != null) {
+                    db.removeWorker(selectedActivity.getWorker(), selectedActivity);
+                    selectedActivity.removeWorker(selectedActivity.getWorker()); // Usunięcie pracownika z aktywności
+                    db.serializeActivities(activities);
+                    model.setValueAt("", row, 4);
+                    model.fireTableDataChanged(); // Odświeżenie danych w tabeli
                 }
-            });
+            }
+        });
 
-            JButton removeActivityButton = new JButton("Usuń aktywność");
-            removeActivityButton.addActionListener(e -> {
-                int row = table.getSelectedRow();
-                if (row != -1) {
-                    int id = (int) model.getValueAt(row, 0);
-                    db.removeActivity(id); // Usunięcie aktywności z bazy danych
-                    activities.removeIf(a -> a.getId() == id); // Usunięcie aktywności z listy w pamięci
-                    model.removeRow(row); // Usunięcie wiersza z tabeli
-                    activities = DataBase.deserializeActivities(); // Odświeżenie listy aktywności
-                }
-            });
+        JButton removeActivityButton = new JButton("Usuń aktywność");
+        removeActivityButton.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row != -1) {
+                int id = (int) model.getValueAt(row, 0);
+                db.removeActivity(id); // Usunięcie aktywności z bazy danych
+                activities.removeIf(a -> a.getId() == id); // Usunięcie aktywności z listy w pamięci
+                model.removeRow(row); // Usunięcie wiersza z tabeli
+                activities = DataBase.deserializeActivities(); // Odświeżenie listy aktywności
+            }
+        });
 
-            JButton goBackButton = new JButton("Zamknij");
-            goBackButton.addActionListener(e -> {
-                setVisible(false);
-            });
+        JButton goBackButton = new JButton("Zamknij");
+        goBackButton.addActionListener(e -> {
+            setVisible(false);
+        });
 
-            JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
+        if (!isMenago) {
             buttonPanel.add(addActivityButton);
-            buttonPanel.add(addMemberButton);
-            buttonPanel.add(removeMemberButton);
             buttonPanel.add(addWorkerButton);
             buttonPanel.add(removeWorkerButton);
             buttonPanel.add(removeActivityButton);
             buttonPanel.add(goBackButton);
-
-            add(buttonPanel, BorderLayout.SOUTH);
-
-            setVisible(true);
         }
 
-        public void setWorker (Worker worker){
-            this.worker = worker;
-        }
+        buttonPanel.add(addMemberButton);
+        buttonPanel.add(removeMemberButton);
+
+
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
 
     private void removeClubMember(ClubMember clubMember, Activity selectedActivity) {
         selectedActivity.removeFromActivity(clubMember);
@@ -182,4 +189,4 @@ public class ActivityList extends JFrame {
         return -1;
     }
 
-    }
+}

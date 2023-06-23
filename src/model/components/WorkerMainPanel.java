@@ -1,6 +1,5 @@
 package model.components;
 
-import model.gym.Activity;
 import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
@@ -8,9 +7,6 @@ import model.user.Worker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 
 public class WorkerMainPanel {
     private JFrame frame;
@@ -53,16 +49,15 @@ public class WorkerMainPanel {
 
         JButton activityListButton = new JButton("Lista aktywności");
         activityListButton.addActionListener(e -> {
-            ActivityList activityList = new ActivityList(db, worker);
+            ActivityList activityList = new ActivityList(db, worker, false);
             activityList.setVisible(true);
             //            frame.dispose(); nie zamykam tutaj bo robie przycisk powrót który tutaj wraca
         });
 
         JButton addClubMemberButton = new JButton("Dodaj klubowicza");
         addClubMemberButton.addActionListener(e -> {
-            RegisterForm registerForm = new RegisterForm(false);
+            RegisterForm registerForm = new RegisterForm(false, false, false);
             registerForm.createAndShowGUI();
-            frame.dispose();
         });
 
         // Dodaj elementy do panelu

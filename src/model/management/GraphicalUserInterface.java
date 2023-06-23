@@ -68,7 +68,7 @@ public class GraphicalUserInterface {
 
         registerButton.addActionListener(e -> {
             if (registerForm == null) {
-                registerForm = new RegisterForm(true);
+                registerForm = new RegisterForm(true, false , false);
                 registerForm.createAndShowGUI();
             }
             frame.dispose();

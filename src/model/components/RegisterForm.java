@@ -8,6 +8,7 @@ import model.user.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -15,15 +16,18 @@ import java.time.format.DateTimeParseException;
 public class RegisterForm {
 
     private DataBase db;
-    private boolean isRegister = false;
+    private boolean isRegister;
+    private boolean isMenago;
+    private boolean isCM;
 
-    public RegisterForm(boolean isRegister) {
+    public RegisterForm(boolean isRegister, boolean isMenago, boolean isCM) {
         this.db = DataBase.deserialize();
         this.isRegister = isRegister;
+        this.isMenago = isMenago;
+        this.isCM = isCM;
     }
 
     public void createAndShowGUI() {
-        // Utwórz ramkę dla nowego okna
         JFrame frame = new JFrame("Rejestracja");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(1000, 600);
@@ -34,7 +38,6 @@ public class RegisterForm {
         formPanel.setLayout(new GridBagLayout());
         formPanel.setBackground(Color.GRAY);
 
-        // Dodaj etykiety i pola tekstowe do formularza
         GridBagConstraints labelConstraints = new GridBagConstraints();
         labelConstraints.gridx = 0;
         labelConstraints.anchor = GridBagConstraints.EAST;
@@ -70,82 +73,64 @@ public class RegisterForm {
         formPanel.add(passwordLabel, labelConstraints);
         formPanel.add(passwordField, fieldConstraints);
 
-        JComboBox<String> roleComboBox;
-        JTextField salaryField;
-        JTextField managementStyleField;
+        JTextField salaryField = new JTextField(20);
+        JTextField managementStyleField = new JTextField(20);
 
-        if (isRegister) {
-            JLabel roleLabel = new JLabel("Rola:");
-            String[] roles = {User.ROLE_CLUB_MEMBER, User.ROLE_WORKER, User.ROLE_MANAGER};
-            roleComboBox = new JComboBox<>(roles);
-            formPanel.add(roleLabel, labelConstraints);
-            formPanel.add(roleComboBox, fieldConstraints);
+        JLabel salaryLabel = new JLabel("Pensja:");
+        formPanel.add(salaryLabel, labelConstraints);
+        formPanel.add(salaryField, fieldConstraints);
 
-            JLabel salaryLabel = new JLabel("Pensja:");
-            salaryField = new JTextField(20);
-            formPanel.add(salaryLabel, labelConstraints);
-            formPanel.add(salaryField, fieldConstraints);
+        JLabel managementStyleLabel = new JLabel("Styl zarządzania:");
+        formPanel.add(managementStyleLabel, labelConstraints);
+        formPanel.add(managementStyleField, fieldConstraints);
 
-            JLabel managementStyleLabel = new JLabel("Styl zarządzania:");
-            managementStyleField = new JTextField(20);
-            formPanel.add(managementStyleLabel, labelConstraints);
-            formPanel.add(managementStyleField, fieldConstraints);
+        JComboBox<String> roleComboBox = new JComboBox<>();
+        roleComboBox.addItem(User.ROLE_CLUB_MEMBER);
+        roleComboBox.addItem(User.ROLE_WORKER);
+        roleComboBox.addItem(User.ROLE_MANAGER);
 
-            // Ukryj pola pensji i stylu zarządzania na początku
+        // Ustawiamy początkową widoczność pól
+        if (isMenago && !isCM) {
+            salaryLabel.setVisible(true);
+            salaryField.setVisible(true);
+        } else {
             salaryLabel.setVisible(false);
             salaryField.setVisible(false);
-            managementStyleLabel.setVisible(false);
-            managementStyleField.setVisible(false);
+        }
+        managementStyleLabel.setVisible(false);
+        managementStyleField.setVisible(false);
 
-            // Nasłuchuj zmiany wyboru roli
-            roleComboBox.addActionListener(e -> {
+        // Dodajemy nasłuchiwacz zmian w roli
+        roleComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
                 String selectedRole = (String) roleComboBox.getSelectedItem();
-                if (selectedRole != null) {
-                    if (selectedRole.equalsIgnoreCase(User.ROLE_WORKER)) {
-                        salaryLabel.setVisible(true);
-                        salaryField.setVisible(true);
-                    } else if (selectedRole.equalsIgnoreCase(User.ROLE_MANAGER)) {
-                        salaryLabel.setVisible(true);
-                        salaryField.setVisible(true);
-                        managementStyleLabel.setVisible(true);
-                        managementStyleField.setVisible(true);
-                    } else {
-                        salaryLabel.setVisible(false);
-                        salaryField.setVisible(false);
-                        managementStyleLabel.setVisible(false);
-                        managementStyleField.setVisible(false);
-                    }
-                    formPanel.revalidate();
-                    formPanel.repaint();
-                }
-            });
-        } else {
-            roleComboBox = null;
-            managementStyleField = null;
-            salaryField = null;
-        }
+                boolean isManager = User.ROLE_MANAGER.equals(selectedRole);
 
-        // Dodaj przycisk "Zarejestruj się" lub "Dodaj"
-        JButton submitButton;
+                salaryLabel.setVisible(isManager || (isRegister && isMenago));
+                salaryField.setVisible(isManager || (isRegister && isMenago));
+                managementStyleLabel.setVisible(isManager || (isRegister && isMenago));
+                managementStyleField.setVisible(isManager || (isRegister && isMenago));
+            }
+        });
+
+        // Dodajemy pole roli do formularza tylko jeśli isRegister jest true
         if (isRegister) {
-            submitButton = new JButton("Zarejestruj się");
-        } else {
-            submitButton = new JButton("Dodaj");
+            JLabel roleLabel = new JLabel("Rola:");
+            formPanel.add(roleLabel, labelConstraints);
+            formPanel.add(roleComboBox, fieldConstraints);
         }
-        GridBagConstraints buttonConstraints = new GridBagConstraints();
-        buttonConstraints.gridx = 1;
-        buttonConstraints.gridy = 10;
-        buttonConstraints.anchor = GridBagConstraints.CENTER;
-        buttonConstraints.insets = new Insets(30, 0, 0, 10);
-        formPanel.add(submitButton, buttonConstraints);
 
-        JButton backButton = new JButton("Cofnij");
-        GridBagConstraints buttonConstraintsBack = new GridBagConstraints();
-        buttonConstraintsBack.gridx = 1;
-        buttonConstraintsBack.gridy = 11;
-        buttonConstraintsBack.anchor = GridBagConstraints.CENTER;
-        buttonConstraintsBack.insets = new Insets(30, 0, 0, 10);
-        formPanel.add(backButton, buttonConstraintsBack);
+        JButton submitButton = new JButton("Zarejestruj");
+        formPanel.add(submitButton, fieldConstraints);
+
+
+        JButton backButtonForManager = new JButton("Zamknij");
+        JButton backButton = new JButton("Powrót");
+        if (isMenago || !isRegister) {
+            formPanel.add(backButtonForManager, fieldConstraints);
+        } else {
+            formPanel.add(backButton, fieldConstraints);
+        }
 
         frame.add(formPanel);
         frame.setVisible(true);
@@ -157,13 +142,7 @@ public class RegisterForm {
                 LocalDate birthday = LocalDate.parse(birthdayField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String login = loginField.getText();
                 String password = new String(passwordField.getPassword());
-                String role;
-                if (isRegister) {
-                    assert roleComboBox != null;
-                    role = (String) roleComboBox.getSelectedItem();
-                } else {
-                    role = "ClubMember";
-                }
+                String role = isRegister ? (String) roleComboBox.getSelectedItem() : "ClubMember";
 
                 // Sprawdź, czy login jest unikalny
                 boolean isUnique = db.getUsers().stream().noneMatch(u -> u.getLogin().equals(login));
@@ -195,7 +174,9 @@ public class RegisterForm {
                     factory = new WorkerFactory();
                     newUser = factory.create(name, surname, login, password, birthday);
                     if (newUser instanceof Worker) {
-                        if (isRegister) {
+                        if (isRegister && !isMenago) {
+                            ((Worker) newUser).setSalary(0);
+                        } else {
                             ((Worker) newUser).setSalary(Double.parseDouble(salaryField.getText()));
                         }
                     }
@@ -226,6 +207,10 @@ public class RegisterForm {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Wystąpił błąd podczas rejestracji: " + ex.getMessage());
             }
+        });
+
+        backButtonForManager.addActionListener(e -> {
+            frame.dispose();
         });
 
         backButton.addActionListener(e -> {
