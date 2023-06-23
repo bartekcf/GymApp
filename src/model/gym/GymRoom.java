@@ -1,6 +1,5 @@
 package model.gym;
 
-import model.management.DataBase;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

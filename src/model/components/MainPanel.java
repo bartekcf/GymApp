@@ -9,8 +9,9 @@ import model.user.ClubMember;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static model.management.GraphicalUserInterface.FRAME_HEIGHT;
 import static model.management.GraphicalUserInterface.FRAME_WIDTH;
@@ -22,6 +23,8 @@ public class MainPanel {
     private DataBase db;
     private ClubMember clubMember;
     private Calendar calendar;
+    private java.util.List<Activity> activities;
+    private List<Activity> userActivities;
 
     public MainPanel(DataBase db, ClubMember clubMember) {
         this.db = db;
@@ -142,6 +145,16 @@ public class MainPanel {
             dialog.setVisible(true);
         });
 
+        JMenuItem userStatisticMenuItem = new JMenuItem("Statystyki");
+        userStatisticMenuItem.addActionListener(e -> {
+            activities = DataBase.deserializeActivities();
+            userActivities = activities.stream()
+                    .filter(activity -> activity.getClubMembers().stream().anyMatch(cm -> cm.getId() == clubMember.getId()))
+                    .collect(Collectors.toList());
+            ClubMemberStatistics statistics = new ClubMemberStatistics(clubMember, userActivities);
+            statistics.setVisible(true);
+        });
+
         JMenuItem logoutMenuItem = new JMenuItem("Wyloguj");
         logoutMenuItem.addActionListener(e -> {
             GraphicalUserInterface gui = new GraphicalUserInterface(managementSystem);
@@ -150,6 +163,7 @@ public class MainPanel {
         });
 
         optionsMenu.add(updateProfileMenuItem);
+        optionsMenu.add(userStatisticMenuItem);
         optionsMenu.add(logoutMenuItem);
         menuBar.add(optionsMenu);
         frame.setJMenuBar(menuBar);

@@ -44,11 +44,9 @@ public class DeleteClubMemberForm extends JDialog {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Utwórz panel z przyciskiem "Usuń"
         JPanel buttonPanel = new JPanel();
         JButton removeButton = new JButton("Usuń");
         removeButton.addActionListener(e -> {
-            // Pobierz indeks wybranego wiersza
             int selectedRowIndex = table.getSelectedRow();
             if (selectedRowIndex != -1) {
                 selectedClubMember = clubMembers.get(selectedRowIndex);
