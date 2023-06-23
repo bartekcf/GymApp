@@ -142,7 +142,15 @@ public class RegisterForm {
                 LocalDate birthday = LocalDate.parse(birthdayField.getText(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String login = loginField.getText();
                 String password = new String(passwordField.getPassword());
-                String role = isRegister ? (String) roleComboBox.getSelectedItem() : "ClubMember";
+                String role;
+                if (isCM && isMenago) {
+                    role = "ClubMember";
+                }
+                else if (!isCM && isMenago) {
+                    role = "Worker";
+                } else {
+                    role = (String) roleComboBox.getSelectedItem();
+                }
 
                 // Sprawdź, czy login jest unikalny
                 boolean isUnique = db.getUsers().stream().noneMatch(u -> u.getLogin().equals(login));

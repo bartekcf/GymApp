@@ -63,6 +63,14 @@ public abstract class User implements Serializable {
         return firstName + " " + lastName;
     }
 
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
     public String getLogin() {
         return login;
     }

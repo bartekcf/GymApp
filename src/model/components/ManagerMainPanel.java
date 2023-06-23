@@ -61,6 +61,12 @@ public class ManagerMainPanel {
             managerStatistics.createAndShowGUI();
         });
 
+        JButton userList = new JButton("Lista użytkowników");
+        userList.addActionListener(e -> {
+            ClubMembersAndWorkersList clubMembersAndWorkersList = new ClubMembersAndWorkersList(db);
+            clubMembersAndWorkersList.createAndShowGUI();
+        });
+
 
         quoteTextField = new JTextField(20);
         updateQuoteButton = new JButton("Aktualizuj cytat");
@@ -108,10 +114,13 @@ public class ManagerMainPanel {
         gbc.gridy = 6;
         frame.getContentPane().add(viewStatisticButton, gbc);
 
-        gbc.gridy = 8;
-        frame.getContentPane().add(quoteTextField, gbc);
+        gbc.gridy = 7;
+        frame.getContentPane().add(userList, gbc);
 
         gbc.gridy = 9;
+        frame.getContentPane().add(quoteTextField, gbc);
+
+        gbc.gridy = 10;
         frame.getContentPane().add(updateQuoteButton, gbc);
 
         // Wyświetl ramkę
