@@ -8,6 +8,7 @@ import model.user.ClubMember;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -72,8 +73,22 @@ public class ManagerStatistics extends JFrame {
     }
 
     private double getAverageActivityPerDay() {
-        // TODO: Implement function to calculate average activities per day
-        return 0;
+        updateClubMembers();
+        List<Activity> activities = DataBase.deserializeActivities(); // Wczytaj aktywności z bazy danych
+
+        long totalActivities = activities.size();
+        long totalDays = clubMembers.stream()
+                .flatMap(member -> member.getActivities().stream())
+                .map(Activity::getStartTime)
+                .map(LocalDate::from)
+                .distinct()
+                .count();
+
+        if (totalDays == 0) {
+            return 0;
+        }
+
+        return (double) totalActivities / totalDays;
     }
 
     private String getPaidToUnpaidRatio() {
