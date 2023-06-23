@@ -23,14 +23,14 @@ public class Main {
         Worker marekprac = new Worker("Marek", "Kowalczuk", "Mira11s", "Ha2slo123", LocalDate.of(2002, 8, 17), 100, User.ROLE_WORKER);
 
 
-        GymRoom room1 = new GymRoom("Fitness", 1);
-        GymRoom room2 = new GymRoom("Aerobik", 2);
-        GymRoom room3 = new GymRoom("Siłownia", 3);
-        GymRoom room4 = new GymRoom("Cycling", 4);
-        GymRoom room5 = new GymRoom("Taniec", 5);
-        GymRoom room6 = new GymRoom("Stretching", 6);
-        GymRoom room7 = new GymRoom("Boks", 7);
-        GymRoom room8 = new GymRoom("Joga", 8);
+        GymRoom room1 = new GymRoom("Fitness", 1, 10);
+        GymRoom room2 = new GymRoom("Aerobik", 2, 5);
+        GymRoom room3 = new GymRoom("Siłownia", 3, 4);
+        GymRoom room4 = new GymRoom("Cycling", 4, 50);
+        GymRoom room5 = new GymRoom("Taniec", 5 , 15);
+        GymRoom room6 = new GymRoom("Stretching", 6 , 5);
+        GymRoom room7 = new GymRoom("Boks", 7, 2);
+        GymRoom room8 = new GymRoom("Joga", 8, 10);
 
         ManagementSystem managementSystem = new ManagementSystem();
 

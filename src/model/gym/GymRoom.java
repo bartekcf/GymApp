@@ -9,11 +9,14 @@ import java.util.List;
 public class GymRoom implements Serializable {
     private int number;
     private String name;
-    private List<Activity> activities;  // lista zajęć, które odbywają się w tej sali
+    private List<Activity> activities;// lista zajęć, które odbywają się w tej sali
 
-    public GymRoom(String name, int number) {
+    private int membersNumberMax;
+
+    public GymRoom(String name, int number , int membersNumberMax) {
         this.name = name;
         this.number = number;
+        this.membersNumberMax = membersNumberMax;
         this.activities = new ArrayList<>();
     }
 
@@ -23,6 +26,22 @@ public class GymRoom implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public int getMembersNumberMax() {
+        return membersNumberMax;
+    }
+
+    public void setMembersNumberMax(int membersNumberMax) {
+        this.membersNumberMax = membersNumberMax;
     }
 
     public void setName(String name) {

@@ -1,5 +1,6 @@
 package model.components;
 
+import model.gym.Activity;
 import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
@@ -7,6 +8,7 @@ import model.user.Manager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class ManagerMainPanel {
     private JFrame frame;
@@ -15,6 +17,7 @@ public class ManagerMainPanel {
     private Manager manager;
     private JTextField quoteTextField;
     private JButton updateQuoteButton;
+    private List<Activity> activities;
 
     public ManagerMainPanel(DataBase db, Manager manager) {
         this.db = db;
@@ -50,6 +53,14 @@ public class ManagerMainPanel {
             RegisterForm registerForm = new RegisterForm(false, true, false);
             registerForm.createAndShowGUI();
         });
+
+
+        JButton viewStatisticButton = new JButton("Statystki");
+        viewStatisticButton.addActionListener(e -> {
+            ManagerStatistics managerStatistics = new ManagerStatistics(db);
+            managerStatistics.createAndShowGUI();
+        });
+
 
         quoteTextField = new JTextField(20);
         updateQuoteButton = new JButton("Aktualizuj cytat");
@@ -95,9 +106,12 @@ public class ManagerMainPanel {
         frame.getContentPane().add(addWorkerButton, gbc);
 
         gbc.gridy = 6;
+        frame.getContentPane().add(viewStatisticButton, gbc);
+
+        gbc.gridy = 8;
         frame.getContentPane().add(quoteTextField, gbc);
 
-        gbc.gridy = 7;
+        gbc.gridy = 9;
         frame.getContentPane().add(updateQuoteButton, gbc);
 
         // Wyświetl ramkę
