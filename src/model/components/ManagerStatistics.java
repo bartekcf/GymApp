@@ -1,16 +1,16 @@
 package model.components;
 
 import model.gym.Activity;
+import model.gym.GymRoom;
 import model.management.DataBase;
 import model.user.ClubMember;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ManagerStatistics extends JFrame {
@@ -19,6 +19,7 @@ public class ManagerStatistics extends JFrame {
 
     public ManagerStatistics(DataBase db) {
         this.db = db;
+        this.clubMembers = db.getClubMembers(); // Aktualizacja listy członków klubu
 
         setTitle("Statystyki Managera");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -38,31 +39,46 @@ public class ManagerStatistics extends JFrame {
 
     private JPanel createStatisticsPanel() {
         JPanel statisticsPanel = new JPanel();
-        statisticsPanel.setLayout(new BorderLayout());
+        statisticsPanel.setLayout(new BoxLayout(statisticsPanel, BoxLayout.Y_AXIS));
 
-        String[] columnNames = {"Statystyka", "Wartość"};
-        Object[][] data = {
-                {"Średnia ilość klubowiczów zapisanych na zajęcia jednego dnia", getAverageActivityPerDay()},
-                {"Stosunek opłaconych do nieopłaconych klubowiczy.", getPaidToUnpaidRatio()},
-                {"Średnia ilość klubowiczy zapisanych na podany typ zajęć", getAverageActivityForRoom()}
-        };
+        // Create two table models
+        DefaultTableModel model1 = new DefaultTableModel(new Object[][]{
+                {"Średnia ilość klubowiczy zapisanych na zajęcia jednego dnia", getAverageActivityPerDay()},
+                {"Stosunek nieopłaconych do opłaconych klubowiczy.", getPaidToUnpaidRatio()},
 
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
-        JTable table = new JTable(model);
-        JScrollPane scrollPane = new JScrollPane(table);
+        }, new String[]{"Statystyka", "Wartość"});
 
-        statisticsPanel.add(scrollPane, BorderLayout.CENTER);
+        DefaultTableModel model2 = new DefaultTableModel(new String[]{"Nazwa zajęć", "Średnia liczba zapisanych"}, 0);
+
+        Map<String, Double> averageActivityForRoom = getAverageActivityForRoom();
+
+        for (Map.Entry<String, Double> entry : averageActivityForRoom.entrySet()) {
+            model2.addRow(new Object[]{entry.getKey(), entry.getValue()});
+        }
+
+        // Create two tables and put them into scroll panes
+        JTable table1 = new JTable(model1);
+        JScrollPane scrollPane1 = new JScrollPane(table1);
+
+        JTable table2 = new JTable(model2);
+        JScrollPane scrollPane2 = new JScrollPane(table2);
+
+        // Add scroll panes to panel
+        statisticsPanel.add(scrollPane1);
+        statisticsPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add a spacer between the two tables
+        statisticsPanel.add(scrollPane2);
 
         return statisticsPanel;
     }
 
     private double getAverageActivityPerDay() {
-        //TODO: Implement function to calculate average activities per day
+        // TODO: Implement function to calculate average activities per day
         return 0;
     }
 
     private String getPaidToUnpaidRatio() {
-        clubMembers = db.getClubMembers();
+        updateClubMembers(); // Aktualizacja listy członków klubu
+
         long paidMembers = clubMembers.stream()
                 .filter(ClubMember::isPaid)
                 .count();
@@ -73,22 +89,35 @@ public class ManagerStatistics extends JFrame {
     }
 
     private Map<String, Double> getAverageActivityForRoom() {
-        Map<String, List<Activity>> roomActivitiesMap = new HashMap<>();
+        List<GymRoom> allRooms = DataBase.deserializeRooms();
 
-        for (ClubMember member : clubMembers) {
-            for (Activity activity : member.getActivities()) {
-                String roomName = activity.getRoom().getName();
-                if (!roomActivitiesMap.containsKey(roomName)) {
-                    roomActivitiesMap.put(roomName, new ArrayList<>());
-                }
-                roomActivitiesMap.get(roomName).add(activity);
-            }
-        }
-
-        return roomActivitiesMap.entrySet().stream()
+        Map<String, Double> roomCountMap = allRooms.stream()
                 .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> (double) entry.getValue().size() / clubMembers.size()
+                        GymRoom::getName,
+                        room -> {
+                            long count = clubMembers.stream()
+                                    .flatMap(member -> member.getActivities().stream())
+                                    .filter(activity -> Objects.equals(activity.getRoom().getName(), room.getName()))
+                                    .count();
+                            return count > 0 ? 1.0 : 0.0;
+                        }
                 ));
+
+        double totalMembers = clubMembers.size();
+        roomCountMap.replaceAll((room, count) -> count / totalMembers);
+
+        return roomCountMap;
+    }
+
+    private void updateClubMembers() {
+        db = DataBase.deserialize();
+        clubMembers = db.getClubMembers();
+        List<Activity> activities = DataBase.deserializeActivities(); // Wczytaj aktywności z bazy danych
+        for (ClubMember member : clubMembers) {
+            List<Activity> memberActivities = activities.stream()
+                    .filter(activity -> activity.getClubMembers().stream().anyMatch(clubMember -> clubMember.getId() == member.getId()))
+                    .toList();
+            memberActivities.forEach(member::signUpForActivity);
+        }
     }
 }
