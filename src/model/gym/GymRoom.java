@@ -1,6 +1,9 @@
 package model.gym;
 
+import model.management.DataBase;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +45,22 @@ public class GymRoom implements Serializable {
     public void setActivities(List<Activity> activities) {
         this.activities = activities;
     }
+    public boolean isRoomOccupied(LocalDateTime startTime, LocalDateTime endTime, List<Activity> activities) {
+        for (Activity activity : activities) {
+            LocalDateTime activityStartTime = activity.getStartTime();
+            LocalDateTime activityEndTime = activity.getEndTime();
+
+            if (startTime.isBefore(activityEndTime) && endTime.isAfter(activityStartTime)) {
+                return true;  // sala zajeta
+            }
+        }
+
+        return false;  // sala wolna
+    }
 
     @Override
     public String toString() {
         return "Pokój nr " + number + ": " + name;
     }
+
 }

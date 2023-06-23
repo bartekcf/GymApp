@@ -180,6 +180,11 @@ public class DataBase implements Serializable {
         }
     }
 
+
+    public void setGymRooms(List<GymRoom> gymRooms) {
+        this.gymRooms = gymRooms;
+    }
+
     public static List<GymRoom> deserializeRooms() {
         List<GymRoom> rooms;
         try {

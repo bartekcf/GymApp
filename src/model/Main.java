@@ -94,8 +94,8 @@ public class Main {
         db.addRoom(room8);
 
         db.serializeRooms(db.getGymRooms());
-
-
+        db.setGymRooms(DataBase.deserializeRooms());
+        
         GraphicalUserInterface GUI = new GraphicalUserInterface(managementSystem);
         GUI.createAndShowGUI();
     }

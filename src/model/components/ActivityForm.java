@@ -69,9 +69,17 @@ public class ActivityForm {
 
             GymRoom selectedRoom = (GymRoom) roomComboBox.getSelectedItem();
 
+            // Sprawdzenie zajętości sali w wybranych godzinach
+
+
             Activity activity = new Activity(name, startTime, endTime, worker, selectedRoom);
 
             List<Activity> activityList = DataBase.deserializeActivities();
+
+            if (selectedRoom.isRoomOccupied(startTime, endTime, activityList)) {
+                JOptionPane.showMessageDialog(addActivityFrame, "Wybrana sala jest już zajęta w podanym czasie.", "Błąd", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             activityList.add(activity);
             db.serializeActivities(activityList);
