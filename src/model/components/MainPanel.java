@@ -6,10 +6,12 @@ import model.management.DataBase;
 import model.management.GraphicalUserInterface;
 import model.management.ManagementSystem;
 import model.user.ClubMember;
+import model.user.Manager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,7 @@ public class MainPanel {
     private Calendar calendar;
     private java.util.List<Activity> activities;
     private List<Activity> userActivities;
+    private JButton viewQuoteButton;
 
     public MainPanel(DataBase db, ClubMember clubMember) {
         this.db = db;
@@ -135,6 +138,23 @@ public class MainPanel {
             gymPassDialog.setVisible(true);
         });
 
+        JButton viewQuoteButton = new JButton("Zobacz cytat");
+
+        Manager manager = db.getUsers().stream()
+                .filter(user -> user instanceof Manager)
+                .map(user -> (Manager) user)
+                .findFirst()
+                .orElse(null);
+
+        String quote = manager.getMessage();
+        if(!Objects.equals(quote, "")){
+        viewQuoteButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, quote, "Cytat od managera", JOptionPane.INFORMATION_MESSAGE);
+        });}
+        else {
+            JOptionPane.showMessageDialog(frame, "Manager nie podał żadnego cytatu", "Cytat od managera", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         // Dodaj przycisk wylogowania jako rozwijane menu
         JMenuBar menuBar = new JMenuBar();
         JMenu optionsMenu = new JMenu("Menu");
@@ -188,6 +208,9 @@ public class MainPanel {
 
         gbc.gridy = 4;
         contentPanel.add(showCalendarButton, gbc);
+
+        gbc.gridy = 5;
+        contentPanel.add(viewQuoteButton, gbc);
 
         frame.setContentPane(CMPanel);
         frame.getContentPane().add(contentPanel);

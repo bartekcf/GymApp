@@ -13,6 +13,8 @@ public class ManagerMainPanel {
     private ManagementSystem managementSystem;
     private DataBase db;
     private Manager manager;
+    private JTextField quoteTextField;
+    private JButton updateQuoteButton;
 
     public ManagerMainPanel(DataBase db, Manager manager) {
         this.db = db;
@@ -49,6 +51,15 @@ public class ManagerMainPanel {
             registerForm.createAndShowGUI();
         });
 
+        quoteTextField = new JTextField(20);
+        updateQuoteButton = new JButton("Aktualizuj cytat");
+        updateQuoteButton.addActionListener(e -> {
+            String newQuote = quoteTextField.getText();
+            manager.setMessage(newQuote);
+            db.serialize(); // Zapisz zmiany w bazie danych
+            JOptionPane.showMessageDialog(frame, "Cytat został zaktualizowany.");
+        });
+
         // Dodaj przycisk wylogowania jako rozwijane menu
         JMenuBar menuBar = new JMenuBar();
         JMenu optionsMenu = new JMenu("Menu");
@@ -82,6 +93,12 @@ public class ManagerMainPanel {
 
         gbc.gridy = 5;
         frame.getContentPane().add(addWorkerButton, gbc);
+
+        gbc.gridy = 6;
+        frame.getContentPane().add(quoteTextField, gbc);
+
+        gbc.gridy = 7;
+        frame.getContentPane().add(updateQuoteButton, gbc);
 
         // Wyświetl ramkę
         frame.setVisible(true);

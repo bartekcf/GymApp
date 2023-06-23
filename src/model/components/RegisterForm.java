@@ -184,6 +184,11 @@ public class RegisterForm {
                     factory = new ManagerFactory();
                     newUser = factory.create(name, surname, login, password, birthday);
                     if (newUser instanceof Manager) {
+                        // Sprawdź, czy istnieje już manager w bazie danych
+                        if (db.getUsers().stream().anyMatch(user -> user instanceof Manager)) {
+                            JOptionPane.showMessageDialog(frame, "Manager może być tylko jeden.");
+                            return;
+                        }
                         if (isRegister) {
                             ((Manager) newUser).setSalary(Double.parseDouble(salaryField.getText()));
                             ((Manager) newUser).setManagementStyle(managementStyleField.getText());
