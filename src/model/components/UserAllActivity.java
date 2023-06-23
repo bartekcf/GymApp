@@ -53,6 +53,15 @@ public class UserAllActivity extends JFrame {
             if (row != -1) {
                 int id = (int) model.getValueAt(row, 0);
                 Activity selectedActivity = activities.stream().filter(a -> a.getId() == id).findFirst().orElse(null);
+                boolean alreadySigned = activities.stream()
+                        .anyMatch(activity -> activity.getClubMembers()
+                                .stream()
+                                .anyMatch(clubMember1 -> clubMember1.getId() == this.clubMember.getId()));
+
+                if(alreadySigned){
+                    JOptionPane.showMessageDialog(null, "Jesteś juz zapisany na te zajęcia.", "Informacja", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
                 if (selectedActivity != null) {
                     if(!clubMember.isPaid()){
                         JOptionPane.showMessageDialog(null, "Masz nie opłacony karnet.", "Informacja", JOptionPane.INFORMATION_MESSAGE);

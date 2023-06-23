@@ -69,8 +69,6 @@ public class ActivityForm {
 
             GymRoom selectedRoom = (GymRoom) roomComboBox.getSelectedItem();
 
-            // Sprawdzenie zajętości sali w wybranych godzinach
-
 
             Activity activity = new Activity(name, startTime, endTime, worker, selectedRoom);
 

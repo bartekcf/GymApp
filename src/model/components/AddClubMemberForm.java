@@ -57,7 +57,9 @@ public class AddClubMemberForm extends JDialog {
                         .orElse(null);
 
                 if (selectedClubMember != null) {
-                    boolean isMemberAssigned = selectedActivity.getClubMembers().contains(selectedClubMember);
+                    boolean isMemberAssigned = selectedActivity.getClubMembers()
+                            .stream()
+                            .anyMatch(clubMember -> clubMember.getId() == selectedClubMember.getId());
                     if (isMemberAssigned) {
                         JOptionPane.showMessageDialog(this, "Ten użytkownik jest już przypisany do tych zajęć.", "Błąd", JOptionPane.ERROR_MESSAGE);
                     } else if (!selectedClubMember.isPaid()) {

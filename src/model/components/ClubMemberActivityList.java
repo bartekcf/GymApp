@@ -79,9 +79,10 @@ public class ClubMemberActivityList extends JFrame {
                             .findFirst()
                             .orElse(null);
                     if (memberToRemove != null) {
-                        db.removeClubMember(memberToRemove, selectedActivity);
                         selectedActivity.removeClubMember(memberToRemove);
+                        db.removeClubMember(memberToRemove, selectedActivity);
                         db.serializeActivities(activities);
+                        activities = DataBase.deserializeActivities();
                         model.removeRow(row);
                     }
                 }

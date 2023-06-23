@@ -29,7 +29,7 @@ public class ActivityList extends JFrame {
 
         setTitle("Lista aktywności");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 600);
+        setSize(900, 600);
         setLayout(new BorderLayout());
 
         activities = DataBase.deserializeActivities();
@@ -148,17 +148,21 @@ public class ActivityList extends JFrame {
         });
 
         JPanel buttonPanel = new JPanel();
-        if (!isMenago) {
+
+        //glupi if ale chce miec ten przycisk pierwszy
+        if(!isMenago){
             buttonPanel.add(addActivityButton);
-            buttonPanel.add(addWorkerButton);
-            buttonPanel.add(removeWorkerButton);
-            buttonPanel.add(removeActivityButton);
-            buttonPanel.add(goBackButton);
         }
 
         buttonPanel.add(addMemberButton);
         buttonPanel.add(removeMemberButton);
 
+        if (!isMenago) {
+            buttonPanel.add(addWorkerButton);
+            buttonPanel.add(removeWorkerButton);
+            buttonPanel.add(removeActivityButton);
+            buttonPanel.add(goBackButton);
+        }
 
         add(buttonPanel, BorderLayout.SOUTH);
 
