@@ -1,7 +1,7 @@
-bartek,bartek123,Bartek,Kedziora,2022 03 21 00 00 00 
+bartek,bartek1,Bartek,,2022 03 21 00 00 00 
 kowal ,kowal123,michal,kwoaslski,213213
 asdasdas,dasdas,dasdsa,dasdas,dasdasd
 gsdgsd,gsdgdsg,gsdsdgg,sdgsdgsdg,sdgds
 fgasfas,fasfsaf,asdsa,dasdsa,dasdfsa
-wiktor,deka,wiktor,jebany,deka
+wiktor,wiktor
 michal,michal123,Michal,Krawczyk,12.0.2.01 2002-02321
